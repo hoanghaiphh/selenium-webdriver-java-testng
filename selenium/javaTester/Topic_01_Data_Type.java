@@ -57,7 +57,6 @@ public class Topic_01_Data_Type {
     // string - chuoi ky tu - nam trong dau ""
     String fullname = "Minh";
 
-
     // Khai bao bien de luu tru 1 loai du lieu nao do
     // Access Modifier: pham vi truy cap (public/ private/ protected/ default)
     // Kieu du lieu

@@ -87,9 +87,9 @@ public class Topic_02_Selenium_Locator {
         driver.findElement(By.cssSelector("#FirstName"));
 
         // CSS vs Class
-        driver.findElement(By.cssSelector("div[class='page-title']"));
-        driver.findElement(By.cssSelector("div.page-title"));
-        driver.findElement(By.cssSelector(".page-title"));
+        driver.findElement(By.cssSelector("div[class='header-logo']"));
+        driver.findElement(By.cssSelector("div.header-logo"));
+        driver.findElement(By.cssSelector(".header-logo"));
 
         // CSS vs Name
         driver.findElement(By.cssSelector("input[name='FirstName']"));
@@ -108,24 +108,24 @@ public class Topic_02_Selenium_Locator {
     @Test
     public void TC_08_XPATH() {
         // CSS vs ID
-        driver.findElement(By.xpath("//input[@id='FirstName']"));
+        driver.findElement(By.xpath("//input[@id='LastName']"));
 
         // CSS vs Class
-        driver.findElement(By.xpath("//div[@class='page-title']"));
+        driver.findElement(By.xpath("//div[@class='currency-selector']"));
 
         // CSS vs Name
-        driver.findElement(By.xpath("//input[@name='FirstName']"));
+        driver.findElement(By.xpath("//input[@name='Email']"));
 
         // CSS vs tagName
-        driver.findElements(By.xpath("//input"));
+        driver.findElements(By.xpath("//span"));
 
         // CSS vs LinkText
-        driver.findElement(By.xpath("//a[@href='/customer/addresses']"));
-        driver.findElement(By.xpath("//a[text()='Addresses']"));
+        driver.findElement(By.xpath("//a[@href='/jewelry']"));
+        driver.findElement(By.xpath("//a[text()='Jewelry ']"));
 
         // CSS vs Partial Link Text
-        driver.findElement(By.xpath("//a[contains(@href,'addresses')]"));
-        driver.findElement(By.xpath("//a[contains(text(),'Addresses')]"));
+        driver.findElement(By.xpath("//a[contains(@href,'viewedproducts')]"));
+        driver.findElement(By.xpath("//a[contains(text(),'Recently vie')]"));
     }
     @AfterClass
     public void
