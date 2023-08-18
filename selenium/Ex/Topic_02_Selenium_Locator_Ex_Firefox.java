@@ -1,4 +1,4 @@
-package webdriver;
+package Ex;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class Topic_02_Selenium_Locator_Ex {
+public class Topic_02_Selenium_Locator_Ex_Firefox {
     WebDriver driver;
     String projectPath = System.getProperty("user.dir");
     String osName = System.getProperty("os.name");
