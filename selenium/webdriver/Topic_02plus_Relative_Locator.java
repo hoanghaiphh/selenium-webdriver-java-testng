@@ -62,10 +62,9 @@ public class Topic_02plus_Relative_Locator {
         List<WebElement> alllinks = driver.findElements(RelativeLocator.with(By.tagName("a")));
         System.out.println(alllinks.size());
 
-        By rememberMeTextBy = RelativeLocator.with(By.tagName("lable"))
+        By rememberMeTextBy = RelativeLocator.with(By.tagName("label"))
                 .above(loginButtonElement)
                 .toRightOf(rememberMeBy);
-        System.out.println(rememberMeTextBy);
 
     }
 
