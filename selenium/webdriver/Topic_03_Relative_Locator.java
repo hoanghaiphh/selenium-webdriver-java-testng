@@ -10,11 +10,10 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Topic_02plus_Relative_Locator {
+public class Topic_03_Relative_Locator {
     WebDriver driver;
     String projectPath = System.getProperty("user.dir");
     String osName = System.getProperty("os.name");
@@ -70,13 +69,7 @@ public class Topic_02plus_Relative_Locator {
     }
 
     @Test
-    public void TC_02_Assert() {
-        driver.get("https://demo.nopcommerce.com/login?returnUrl=%2Fregister");
-
-        // Get text va gan cho 1 bien string
-        String successMessageText = driver.findElement(By.xpath("//div[@class='page-title']//h1")).getText();
-        // Doi chieu
-        Assert.assertEquals(successMessageText,"Welcome, Please Sign In!");
+    public void TC_02_() {
 
     }
 
