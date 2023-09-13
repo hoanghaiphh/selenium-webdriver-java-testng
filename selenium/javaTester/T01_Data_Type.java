@@ -1,7 +1,6 @@
 package javaTester;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class Topic_01_Data_Type {
+public class T01_Data_Type {
     // Kieu du lieu trong java - 2 nhom
 
     // I - Kieu du lieu nguyen thuy (Primitive Type)
@@ -38,7 +37,7 @@ public class Topic_01_Data_Type {
     // Class
     FirefoxDriver firefoxDriver = new FirefoxDriver();
     Select select = new Select(firefoxDriver.findElement(By.className("")));
-    Topic_01_Data_Type topic01 = new Topic_01_Data_Type();
+    T01_Data_Type topic01 = new T01_Data_Type();
 
     // Interface
     WebDriver driver;
