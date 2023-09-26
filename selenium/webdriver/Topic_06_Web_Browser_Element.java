@@ -123,8 +123,8 @@ public class Topic_06_Web_Browser_Element {
             System.out.println("Email is not enabled");
         }
 
-        Assert.assertTrue(driver.findElement(By.xpath("//label[text()='Under 18']")).isEnabled());
-        if (driver.findElement(By.xpath("//label[text()='Under 18']")).isEnabled()) {
+        Assert.assertTrue(driver.findElement(By.id("under_18")).isEnabled());
+        if (driver.findElement(By.id("under_18")).isEnabled()) {
             System.out.println("Age (Under 18) Radio button is enabled");
         } else {
             System.out.println("Age (Under 18) Radio button is not enabled");
@@ -151,8 +151,8 @@ public class Topic_06_Web_Browser_Element {
             System.out.println("Job Role 02 is not enabled");
         }
 
-        Assert.assertTrue(driver.findElement(By.xpath("//label[text()='Development']")).isEnabled());
-        if (driver.findElement(By.xpath("//label[text()='Development']")).isEnabled()) {
+        Assert.assertTrue(driver.findElement(By.id("development")).isEnabled());
+        if (driver.findElement(By.id("development")).isEnabled()) {
             System.out.println("Interest (Development) Checkbox is enabled");
         } else {
             System.out.println("Interest (Development) Checkbox is not enabled");
@@ -172,8 +172,8 @@ public class Topic_06_Web_Browser_Element {
             System.out.println("Password is not enabled");
         }
 
-        Assert.assertFalse(driver.findElement(By.xpath("//label[text()='Checkbox is disabled']")).isEnabled());
-        if (driver.findElement(By.xpath("//label[text()='Checkbox is disabled']")).isEnabled()) {
+        Assert.assertFalse(driver.findElement(By.id("radio-disabled")).isEnabled());
+        if (driver.findElement(By.id("radio-disabled")).isEnabled()) {
             System.out.println("Age (Checkbox is disabled) Radio button is enabled");
         } else {
             System.out.println("Age (Checkbox is disabled) Radio button is not enabled");
@@ -193,8 +193,8 @@ public class Topic_06_Web_Browser_Element {
             System.out.println("Job Role 03 is not enabled");
         }
 
-        Assert.assertFalse(driver.findElement(By.xpath("//label[text()='Checkbox is disabled']")).isEnabled());
-        if (driver.findElement(By.xpath("//label[text()='Checkbox is disabled']")).isEnabled()) {
+        Assert.assertFalse(driver.findElement(By.id("check-disbaled")).isEnabled());
+        if (driver.findElement(By.id("check-disbaled")).isEnabled()) {
             System.out.println("Interest (Checkbox is disabled) Checkbox is enabled");
         } else {
             System.out.println("Interest (Checkbox is disabled) Checkbox is not enabled");
