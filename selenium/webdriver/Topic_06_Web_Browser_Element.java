@@ -210,11 +210,51 @@ public class Topic_06_Web_Browser_Element {
 
     @Test
     public void Element_TC_03_Selected() {
+        driver.get("https://automationfc.github.io/basic-form/index.html");
+
+        WebElement under18Radio = driver.findElement(By.id("under_18"));
+        WebElement javaCheckbox = driver.findElement(By.id("java"));
+
+        under18Radio.click();
+        javaCheckbox.click();
+        Assert.assertTrue(under18Radio.isSelected());
+        Assert.assertTrue(javaCheckbox.isSelected());
+
+        javaCheckbox.click();
+        Assert.assertFalse(javaCheckbox.isSelected());
 
     }
 
     @Test
     public void Element_TC_04_Register_Function() {
+        driver.get("https://login.mailchimp.com/signup/");
+
+        driver.findElement(By.id("email")).sendKeys("automation@gmail.com");
+        WebElement password = driver.findElement(By.id("new_password"));
+
+        password.clear();
+        password.sendKeys("a");
+        Assert.assertTrue(driver.findElement(By.cssSelector(".lowercase-char.completed")).isDisplayed());
+
+        password.clear();
+        password.sendKeys("A");
+        Assert.assertTrue(driver.findElement(By.cssSelector(".uppercase-char.completed")).isDisplayed());
+
+        password.clear();
+        password.sendKeys("1");
+        Assert.assertTrue(driver.findElement(By.cssSelector(".number-char.completed")).isDisplayed());
+
+        password.clear();
+        password.sendKeys("@");
+        Assert.assertTrue(driver.findElement(By.cssSelector(".special-char.completed")).isDisplayed());
+
+        password.clear();
+        password.sendKeys("abcd1234");
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='8-char completed']")).isDisplayed());
+
+        password.clear();
+        password.sendKeys("Abcd@123");
+        Assert.assertFalse(driver.findElement(By.cssSelector("div[id='passwordHint']>div")).isDisplayed());
 
     }
 
