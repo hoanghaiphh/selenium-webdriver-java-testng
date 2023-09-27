@@ -1,14 +1,11 @@
-package Ex;
+package draft;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
-
-public class Topic_00_Draft {
+public class Draft_00 {
     WebDriver driver;
 
     @BeforeClass
@@ -28,9 +25,17 @@ public class Topic_00_Draft {
         String test3 = Math.random().toString(36).substring(2,7);
         // Random 5 so
         String test4 = Math.random().toString(9).substring(2,7);*/
-        Double intTest = Math.floor(Math.random()*10000);
 
-        System.out.println(intTest);
+        Double random1 = Math.random();
+        Double random2 = random1*1000000;
+        Double random3 = Math.floor(random2);
+        Long longNum = Math.round(random3);
+        Long longNum2 = Math.round(random2);
+
+        System.out.println(random1);
+        System.out.println(random2);
+        System.out.println(random3);
+        System.out.println(longNum2);
 
 
     }

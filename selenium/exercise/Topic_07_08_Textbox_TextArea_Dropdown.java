@@ -1,4 +1,4 @@
-package webdriver;
+package exercise;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,7 +32,7 @@ public class Topic_07_08_Textbox_TextArea_Dropdown {
         driver.findElement(By.cssSelector("input[id='firstname']")).sendKeys("Hai");
         driver.findElement(By.cssSelector("input[id='middlename']")).sendKeys("Hoang");
         driver.findElement(By.cssSelector("input[id='lastname']")).sendKeys("Phan");
-        String emailRandom = "automation" + Math.floor(Math.random()*111111) + "@gmail.com";
+        String emailRandom = "automation" + Math.round(Math.random()*1000000) + "@gmail.com";
         driver.findElement(By.cssSelector("input[id='email_address']")).sendKeys(emailRandom);
         driver.findElement(By.cssSelector("input[id='password']")).sendKeys("Abc@1234");
         driver.findElement(By.cssSelector("input[id='confirmation']")).sendKeys("Abc@1234");
@@ -44,6 +44,7 @@ public class Topic_07_08_Textbox_TextArea_Dropdown {
         Assert.assertTrue(contactInfo.contains("Hai"));
         Assert.assertTrue(contactInfo.contains("Phan"));
         Assert.assertTrue(contactInfo.contains(emailRandom));
+        System.out.println(contactInfo);
 
         driver.findElement(By.xpath("//header//span[text()='Account']")).click();
         driver.findElement(By.xpath("//a[text()='Log Out']")).click();
@@ -66,16 +67,15 @@ public class Topic_07_08_Textbox_TextArea_Dropdown {
         driver.findElement(By.cssSelector("input[placeholder='First Name']")).sendKeys("Hai");
         driver.findElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys("Phan");
         String employeeID = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText();
-
         /*WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
         WebElement toggleButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span"));
         toggleButton.click();*/
-
         Thread.sleep(3000);
         driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")).click();
 
         driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
-        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys("Test" + Math.floor(Math.random()*10000));
+        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys("test" + Math.round(Math.random()*1000000));
+        //System.out.println(driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).getText());
         driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).clear();
         driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
         driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
@@ -93,6 +93,7 @@ public class Topic_07_08_Textbox_TextArea_Dropdown {
 
         Thread.sleep(3000);
         driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
+
         //Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).getText(),"40517-402-96-7202");
         //Assert.assertEquals(driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).getText(),"This is generated data of real people");
 

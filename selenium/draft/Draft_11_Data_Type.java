@@ -1,4 +1,4 @@
-package javaTester;
+package draft;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class _01_Data_Type {
+public class Draft_11_Data_Type {
     // Kieu du lieu trong java - 2 nhom
 
     // I - Kieu du lieu nguyen thuy (Primitive Type)
@@ -37,7 +37,7 @@ public class _01_Data_Type {
     // Class
     FirefoxDriver firefoxDriver = new FirefoxDriver();
     Select select = new Select(firefoxDriver.findElement(By.className("")));
-    _01_Data_Type topic01 = new _01_Data_Type();
+    Draft_11_Data_Type topic01 = new Draft_11_Data_Type();
 
     // Interface
     WebDriver driver;
