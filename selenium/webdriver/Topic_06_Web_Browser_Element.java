@@ -234,19 +234,19 @@ public class Topic_06_Web_Browser_Element {
 
         password.clear();
         password.sendKeys("a");
-        Assert.assertTrue(driver.findElement(By.cssSelector(".lowercase-char.completed")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='lowercase-char completed']")).isDisplayed());
 
         password.clear();
         password.sendKeys("A");
-        Assert.assertTrue(driver.findElement(By.cssSelector(".uppercase-char.completed")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='uppercase-char completed']")).isDisplayed());
 
         password.clear();
         password.sendKeys("1");
-        Assert.assertTrue(driver.findElement(By.cssSelector(".number-char.completed")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='number-char completed']")).isDisplayed());
 
         password.clear();
         password.sendKeys("@");
-        Assert.assertTrue(driver.findElement(By.cssSelector(".special-char.completed")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='special-char completed']")).isDisplayed());
 
         password.clear();
         password.sendKeys("abcd1234");
