@@ -54,12 +54,49 @@ public class Topic_07_08_Textbox_TextArea_Dropdown {
     }
 
     @Test
-    public void TC_02_() {
+    public void TC_02_Textbox_TextArea() throws InterruptedException {
+        driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+        driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
+        driver.findElement(By.cssSelector("input[name='password']")).sendKeys("admin123");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        driver.findElement(By.xpath("//span[text()='PIM']")).click();
+        driver.findElement(By.xpath("//a[text()='Add Employee']")).click();
+
+        driver.findElement(By.cssSelector("input[placeholder='First Name']")).sendKeys("Hai");
+        driver.findElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys("Phan");
+        String employeeID = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText();
+
+        /*WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        WebElement toggleButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span"));
+        toggleButton.click();*/
+
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")).click();
+
+        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
+        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys("Test01");
+        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).clear();
+        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
+        driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
+        driver.findElement(By.xpath("//button[text()=' Save ']")).click();
+
+        driver.findElement(By.cssSelector("input[name='firstName']")).getText();
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='firstName']")).getText(),"Hai");
+        driver.findElement(By.cssSelector("input[name='lastName']")).getText();
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='lastName']")).getText(),"Phan");
+        Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText(),employeeID);
+
+        driver.findElement(By.xpath("//a[text()='Immigration']")).click();
+        driver.findElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button")).click();
+        driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys("40517-402-96-7202");
+        driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).sendKeys("This is generated data of real people");
+        driver.findElement(By.xpath("//button[text()=' Save ']")).click();
 
     }
 
     @AfterClass
     public void afterClass() {
-        driver.quit();
+        //driver.quit();
     }
 }
