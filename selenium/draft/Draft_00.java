@@ -1,9 +1,13 @@
 package draft;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.time.Duration;
+import java.util.UUID;
 
 public class Draft_00 {
     WebDriver driver;
@@ -37,6 +41,8 @@ public class Draft_00 {
         System.out.println(random3);
         System.out.println(longNum2);
 
+        String uuid = UUID.randomUUID().toString();
+        System.out.println(uuid);
 
     }
 
