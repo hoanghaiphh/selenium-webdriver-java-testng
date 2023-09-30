@@ -1,6 +1,7 @@
 package exercise;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -11,12 +12,13 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Topic_06_Web_Browser_Element {
+public class Exercise_06_Web_Browser_Element {
     WebDriver driver;
 
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
+        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
@@ -247,19 +249,22 @@ public class Topic_06_Web_Browser_Element {
 
     @Test
     public void Element_TC_04_Register_Function() {
-        driver.manage().window().maximize();
         driver.get("https://login.mailchimp.com/signup/");
 
-        driver.findElement(By.id("email")).sendKeys("automation@gmail.com");
         WebElement password = driver.findElement(By.id("new_password"));
+        driver.findElement(By.id("email")).sendKeys("automation@gmail.com");
 
-        password.click();
+        password.clear();
+        WebElement signUpButton = driver.findElement(By.cssSelector("button#create-account-enabled"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", signUpButton);
         sleepInSeconds(1);
-        Assert.assertFalse(driver.findElement(By.cssSelector("li[class='lowercase-char not-completed']")).isDisplayed());
-        Assert.assertFalse(driver.findElement(By.cssSelector("li[class='uppercase-char not-completed']")).isDisplayed());
-        Assert.assertFalse(driver.findElement(By.cssSelector("li[class='number-char not-completed']")).isDisplayed());
-        Assert.assertFalse(driver.findElement(By.cssSelector("li[class='special-char not-completed']")).isDisplayed());
-        Assert.assertFalse(driver.findElement(By.cssSelector("li[class='8-char not-completed']")).isDisplayed());
+        signUpButton.click();
+        sleepInSeconds(1);
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='lowercase-char not-completed']")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='uppercase-char not-completed']")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='number-char not-completed']")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='special-char not-completed']")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='8-char not-completed']")).isDisplayed());
 
         password.clear();
         password.sendKeys("a");
@@ -314,15 +319,6 @@ public class Topic_06_Web_Browser_Element {
         Assert.assertFalse(driver.findElement(By.cssSelector("li[class='number-char completed']")).isDisplayed());
         Assert.assertFalse(driver.findElement(By.cssSelector("li[class='special-char completed']")).isDisplayed());
         Assert.assertFalse(driver.findElement(By.cssSelector("li[class='8-char completed']")).isDisplayed());
-
-        password.clear();
-        sleepInSeconds(10);
-        driver.findElement(By.id("create-account-enabled")).click();
-        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='lowercase-char not-completed']")).isDisplayed());
-        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='uppercase-char not-completed']")).isDisplayed());
-        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='number-char not-completed']")).isDisplayed());
-        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='special-char not-completed']")).isDisplayed());
-        Assert.assertTrue(driver.findElement(By.cssSelector("li[class='8-char not-completed']")).isDisplayed());
 
     }
 
