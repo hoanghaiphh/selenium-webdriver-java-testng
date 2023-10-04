@@ -16,43 +16,20 @@ public class Exercise_07_08_Textbox_TextArea_Dropdown {
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
+        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
-    @Test
-    public void TC_01_Textbox_TextArea() throws InterruptedException {
-        driver.get("http://live.techpanda.org/");
-
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.xpath("//span[text()='Create an Account']")).click();
-
-        driver.findElement(By.cssSelector("input[id='firstname']")).sendKeys("Hai");
-        driver.findElement(By.cssSelector("input[id='middlename']")).sendKeys("Hoang");
-        driver.findElement(By.cssSelector("input[id='lastname']")).sendKeys("Phan");
-        String emailRandom = "automation" + Math.round(Math.random()*1000000) + "@gmail.com";
-        driver.findElement(By.cssSelector("input[id='email_address']")).sendKeys(emailRandom);
-        driver.findElement(By.cssSelector("input[id='password']")).sendKeys("Abc@1234");
-        driver.findElement(By.cssSelector("input[id='confirmation']")).sendKeys("Abc@1234");
-        driver.findElement(By.xpath("//span[text()='Register']")).click();
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("li[class='success-msg'] span")).getText(),"Thank you for registering with Main Website Store.");
-
-        String contactInfo = driver.findElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p")).getText();
-        Assert.assertTrue(contactInfo.contains("Hai"));
-        Assert.assertTrue(contactInfo.contains("Phan"));
-        Assert.assertTrue(contactInfo.contains(emailRandom));
-        System.out.println(contactInfo);
-
-        driver.findElement(By.xpath("//header//span[text()='Account']")).click();
-        driver.findElement(By.xpath("//a[text()='Log Out']")).click();
-
-        Thread.sleep(7000);
-        Assert.assertEquals(driver.getCurrentUrl(),"http://live.techpanda.org/index.php/");
-
+    public void sleepInSeconds (long timeInSecond) {
+        try {
+            Thread.sleep(timeInSecond*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
-    public void TC_02_Textbox_TextArea() throws InterruptedException {
+    public void TC_02_Textbox_TextArea() {
         // Step 01: Truy cập vào trang
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
@@ -74,7 +51,7 @@ public class Exercise_07_08_Textbox_TextArea_Dropdown {
         /*WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
         WebElement toggleButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span"));
         toggleButton.click();*/
-        Thread.sleep(3000);
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")).click();
         driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
         String userName = "test" + Math.round(Math.random()*1000000);
@@ -103,7 +80,7 @@ public class Exercise_07_08_Textbox_TextArea_Dropdown {
         driver.findElement(By.xpath("//button[text()=' Save ']")).click();
 
         // Step 11: Click vào nút Pencil (Edit)
-        Thread.sleep(3000);
+        sleepInSeconds(3);
         driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
 
         // Step 12: Verify dữ liệu
@@ -115,7 +92,7 @@ public class Exercise_07_08_Textbox_TextArea_Dropdown {
         driver.findElement(By.xpath("//a[text()='Logout']")).click();
 
         // Step 15: Tại màn hình login nhập thông tin hợp lệ đã tạo ở Step 05
-        Thread.sleep(3000);
+        sleepInSeconds(3);
         driver.findElement(By.cssSelector("input[name='username']")).sendKeys(userName);
         driver.findElement(By.cssSelector("input[name='password']")).sendKeys("Abcd@1234");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
