@@ -1,7 +1,6 @@
 package exercise;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Exercise_06_Web_Browser_Element {
+public class Exercise_06_Browser_Element {
     WebDriver driver;
 
     @BeforeClass
