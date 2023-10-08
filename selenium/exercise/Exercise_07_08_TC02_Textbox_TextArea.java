@@ -1,8 +1,11 @@
 package exercise;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -63,9 +66,10 @@ public class Exercise_07_08_TC02_Textbox_TextArea {
         driver.findElement(By.xpath("//button[text()=' Save ']")).click();
 
         // Step 07: Verify dữ liệu đã nhập
-        /*Assert.assertEquals(driver.findElement(By.cssSelector("input[name='firstName']")).getText(),"Hai");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='lastName']")).getText(),"Phan");
-        Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText(),employeeID);*/
+        WebElement firstName = driver.findElement(By.cssSelector("input[name='firstName']"));
+        WebElement lastName = driver.findElement(By.cssSelector("input[name='lastName']"));
+        WebElement id = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+        // Assert..........
 
         // Step 08: CLick vào nút Immigration
         driver.findElement(By.xpath("//a[text()='Immigration']")).click();
@@ -83,8 +87,9 @@ public class Exercise_07_08_TC02_Textbox_TextArea {
         driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
 
         // Step 12: Verify dữ liệu
-        /*Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).getText(),"40517-402-96-7202");
-        Assert.assertEquals(driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).getText(),"This is generated data of real people");*/
+        WebElement ppNumber = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+        WebElement comments = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
+        // Assert..........
 
         // Step 14: Click vào tên user và Logout
         driver.findElement(By.cssSelector("span.oxd-userdropdown-tab")).click();
@@ -100,17 +105,15 @@ public class Exercise_07_08_TC02_Textbox_TextArea {
         driver.findElement(By.xpath("//span[text()='My Info']")).click();
 
         // Step 17: Verify thông tin hiển thị
-        /*Assert.assertEquals(driver.findElement(By.cssSelector("input[name='firstName']")).getText(),"Hai");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='lastName']")).getText(),"Phan");
-        Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText(),employeeID);*/
+
 
         // Steo 18: Vào màn hình Immigration và click nút Pencil
         driver.findElement(By.xpath("//a[text()='Immigration']")).click();
         driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
 
         // Step 19: Verify thông tin hiển thị
-        /*Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).getText(),"40517-402-96-7202");
-        Assert.assertEquals(driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).getText(),"This is generated data of real people");*/
+
+
 
         System.out.println("User: " + userName);
         System.out.println("Password: Abcd@1234");
