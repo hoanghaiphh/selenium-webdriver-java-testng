@@ -32,97 +32,114 @@ public class Exercise_07_08_TC02_Textbox_TextArea {
 
     @Test
     public void TC_02_Textbox_TextArea() {
-        // Step 01: Truy cập vào trang
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
-        // Step 02: Login vào hệ thống
         driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
         driver.findElement(By.cssSelector("input[name='password']")).sendKeys("admin123");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
-
-        // Step 03: Mở trang PIM
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//span[text()='PIM']")).click();
-
-        // Step 04: Mở trang PIM
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//a[text()='Add Employee']")).click();
+        sleepInSeconds(3);
 
         // Step 05: Nhập thông tin hợp lệ
-        driver.findElement(By.cssSelector("input[placeholder='First Name']")).sendKeys("Hai");
-        driver.findElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys("Phan");
-        String employeeID = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getText();
-        /*WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
-        WebElement toggleButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span"));
-        toggleButton.click();*/
+        String firstName = "Automation", lastName = "Testing", password = "Abcd@1234";
+        String userName = "automation" + Math.round(Math.random()*1000000);
+        String passport= "40517-402-96-7202", comments = "This is generated data of real people";
+
+        driver.findElement(By.cssSelector("input[placeholder='First Name']")).sendKeys(firstName);
+        driver.findElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys(lastName);
+        String employeeID = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value");
+
         sleepInSeconds(3);
         driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")).click();
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
-        String userName = "test" + Math.round(Math.random()*1000000);
         driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(userName);
         driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).clear();
-        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
-        driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys("Abcd@1234");
-
-        // Step 06: Save
+        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys(password);
+        driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys(password);
         driver.findElement(By.xpath("//button[text()=' Save ']")).click();
+        sleepInSeconds(3);
 
         // Step 07: Verify dữ liệu đã nhập
-        WebElement firstName = driver.findElement(By.cssSelector("input[name='firstName']"));
-        WebElement lastName = driver.findElement(By.cssSelector("input[name='lastName']"));
-        WebElement id = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
-        // Assert..........
+        WebElement firstNameTextbox = driver.findElement(By.cssSelector("input[name='firstName']"));
+        WebElement lastNameTextbox = driver.findElement(By.cssSelector("input[name='lastName']"));
+        WebElement employeeIdTextbox = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+        Assert.assertEquals(firstNameTextbox.getAttribute("value"),firstName);
+        Assert.assertEquals(lastNameTextbox.getAttribute("value"),lastName);
+        Assert.assertEquals(employeeIdTextbox.getAttribute("value"),employeeID);
+        System.out.println("Step 07 - Verify #1:");
+        System.out.println("\tFullname: " + firstNameTextbox.getAttribute("value") + " " + lastNameTextbox.getAttribute("value"));
+        System.out.println("\tID: " + employeeIdTextbox.getAttribute("value"));
 
-        // Step 08: CLick vào nút Immigration
         driver.findElement(By.xpath("//a[text()='Immigration']")).click();
-
-        // Step 09: Click Add tại Assigned Immigration Records
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button")).click();
+        sleepInSeconds(3);
 
         // Step 10: Nhập dữ liệu và click save
-        driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys("40517-402-96-7202");
-        driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).sendKeys("This is generated data of real people");
+        driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys(passport);
+        driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).sendKeys(comments);
         driver.findElement(By.xpath("//button[text()=' Save ']")).click();
-
-        // Step 11: Click vào nút Pencil (Edit)
         sleepInSeconds(3);
-        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
 
-        // Step 12: Verify dữ liệu
-        WebElement ppNumber = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
-        WebElement comments = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
-        // Assert..........
+        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
+        sleepInSeconds(3);
+
+        // Step 12: Verify dữ liệu đã nhập
+        WebElement passportTextbox = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+        WebElement commentsTextarea = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
+        Assert.assertEquals(passportTextbox.getAttribute("value"),passport);
+        Assert.assertEquals(commentsTextarea.getAttribute("value"),comments);
+        System.out.println("Step 12 - Verify #2:");
+        System.out.println("\tPassport Number: " + passportTextbox.getAttribute("value"));
+        System.out.println("\tComments: " + commentsTextarea.getAttribute("value"));
 
         // Step 14: Click vào tên user và Logout
         driver.findElement(By.cssSelector("span.oxd-userdropdown-tab")).click();
+        sleepInSeconds(3);
         driver.findElement(By.xpath("//a[text()='Logout']")).click();
+        sleepInSeconds(3);
 
         // Step 15: Tại màn hình login nhập thông tin hợp lệ đã tạo ở Step 05
-        sleepInSeconds(3);
         driver.findElement(By.cssSelector("input[name='username']")).sendKeys(userName);
-        driver.findElement(By.cssSelector("input[name='password']")).sendKeys("Abcd@1234");
+        driver.findElement(By.cssSelector("input[name='password']")).sendKeys(password);
         driver.findElement(By.cssSelector("button[type='submit']")).click();
+        sleepInSeconds(3);
 
-        // Step 16: Vào màn hình My Info
         driver.findElement(By.xpath("//span[text()='My Info']")).click();
+        sleepInSeconds(3);
 
         // Step 17: Verify thông tin hiển thị
+        firstNameTextbox = driver.findElement(By.cssSelector("input[name='firstName']"));
+        lastNameTextbox = driver.findElement(By.cssSelector("input[name='lastName']"));
+        employeeIdTextbox = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+        Assert.assertEquals(firstNameTextbox.getAttribute("value"),firstName);
+        Assert.assertEquals(lastNameTextbox.getAttribute("value"),lastName);
+        Assert.assertEquals(employeeIdTextbox.getAttribute("value"),employeeID);
+        System.out.println("Step 17 - Verify #3:");
+        System.out.println("\tFullname: " + firstNameTextbox.getAttribute("value") + " " + lastNameTextbox.getAttribute("value"));
+        System.out.println("\tID: " + employeeIdTextbox.getAttribute("value"));
 
-
-        // Steo 18: Vào màn hình Immigration và click nút Pencil
         driver.findElement(By.xpath("//a[text()='Immigration']")).click();
+        sleepInSeconds(3);
         driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
+        sleepInSeconds(3);
 
         // Step 19: Verify thông tin hiển thị
-
-
-
-        System.out.println("User: " + userName);
-        System.out.println("Password: Abcd@1234");
-        System.out.println("ID: " + employeeID);
-
+        passportTextbox = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+        commentsTextarea = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
+        Assert.assertEquals(passportTextbox.getAttribute("value"),passport);
+        Assert.assertEquals(commentsTextarea.getAttribute("value"),comments);
+        System.out.println("Step 19 - Verify #4:");
+        System.out.println("\tPassport Number: " + passportTextbox.getAttribute("value"));
+        System.out.println("\tComments: " + commentsTextarea.getAttribute("value"));
     }
 
     @AfterClass
     public void afterClass() {
-        //driver.quit();
+        driver.quit();
     }
 }
