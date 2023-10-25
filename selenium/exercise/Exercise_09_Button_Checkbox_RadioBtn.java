@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Exercise_09_Button_Checkbox_RadioBtn {
     WebDriver driver;
@@ -67,59 +68,110 @@ public class Exercise_09_Button_Checkbox_RadioBtn {
         Assert.assertEquals(btnColor.toLowerCase(),"#ef5a00");
     }
 
+    public void checkboxSelect(String checkboxLocator, Boolean checkboxStatus) {
+        if (driver.findElement(By.xpath(checkboxLocator)).isSelected() == checkboxStatus) {
+            driver.findElement(By.xpath(checkboxLocator)).click();
+            sleepInSeconds(1);
+        }
+    }
+
     @Test
     public void TC_02_Default_Checkbox_RadioBtn() {
         driver.get("https://demos.telerik.com/kendo-ui/checkbox/index");
-        WebElement checkbox = driver.findElement(By.cssSelector("input#eq5"));
-        do {
-            checkbox.click();
-            sleepInSeconds(1);
-        } while (!checkbox.isSelected());
-        Assert.assertTrue(checkbox.isSelected());
-        checkbox.click();
         sleepInSeconds(1);
-        Assert.assertFalse(checkbox.isSelected());
+
+        String checkbox = "//label[text()='Dual-zone air conditioning']/preceding-sibling::input";
+
+        checkboxSelect(checkbox, false);
+        Assert.assertTrue(driver.findElement(By.xpath(checkbox)).isSelected());
+
+        checkboxSelect(checkbox, true);
+        Assert.assertFalse(driver.findElement(By.xpath(checkbox)).isSelected());
 
         driver.get("https://demos.telerik.com/kendo-ui/radiobutton/index");
-        WebElement radioBtn = driver.findElement(By.cssSelector("input#engine3"));
-        do {
-            radioBtn.click();
-            sleepInSeconds(1);
-        } while (!radioBtn.isSelected());
-        Assert.assertTrue(radioBtn.isSelected());
+        sleepInSeconds(1);
+
+        String radioBtn = "//label[text()='2.0 Petrol, 147kW']/preceding-sibling::input";
+        checkboxSelect(radioBtn, false);
+        Assert.assertTrue(driver.findElement(By.xpath(radioBtn)).isSelected());
     }
 
     @Test
     public void TC_03_Default_Checkbox_RadioBtn() {
         driver.get("https://material.angular.io/components/radio/examples");
-        WebElement radioBtn = driver.findElement(By.cssSelector("input[value='Summer']"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", radioBtn);
         sleepInSeconds(1);
-        do {
-            radioBtn.click();
-            sleepInSeconds(1);
-        } while (!radioBtn.isSelected());
-        Assert.assertTrue(radioBtn.isSelected());
+
+        WebElement radioBtnElement = driver.findElement(By.xpath("//input[@value='Summer']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", radioBtnElement);
+        sleepInSeconds(1);
+
+        radioBtnElement.click();
+        sleepInSeconds(1);
+        Assert.assertTrue(radioBtnElement.isSelected());
 
         driver.get("https://material.angular.io/components/checkbox/examples");
         sleepInSeconds(1);
-        WebElement checkbox1 = driver.findElement(By.cssSelector("input#mat-mdc-checkbox-1-input"));
-        WebElement checkbox2 = driver.findElement(By.cssSelector("input#mat-mdc-checkbox-2-input"));
-        do {
-            checkbox1.click();
-            sleepInSeconds(1);
-        } while (!checkbox1.isSelected());
-        Assert.assertTrue(checkbox1.isSelected());
-        do {
-            checkbox2.click();
-            sleepInSeconds(1);
-        } while (!checkbox2.isSelected());
-        Assert.assertTrue(checkbox2.isSelected());
-        checkbox1.click();
-        checkbox2.click();
+
+        String checkedCheckbox = "//label[text()='Checked']/preceding-sibling::div/input";
+        String indeterminateCheckbox = "//label[text()='Indeterminate']/preceding-sibling::div/input";
+
+        checkboxSelect(checkedCheckbox, false);
+        Assert.assertTrue(driver.findElement(By.xpath(checkedCheckbox)).isSelected());
+        checkboxSelect(indeterminateCheckbox, false);
+        Assert.assertTrue(driver.findElement(By.xpath(indeterminateCheckbox)).isSelected());
+
+        checkboxSelect(checkedCheckbox, true);
+        Assert.assertFalse(driver.findElement(By.xpath(checkedCheckbox)).isSelected());
+        checkboxSelect(indeterminateCheckbox, true);
+        Assert.assertFalse(driver.findElement(By.xpath(indeterminateCheckbox)).isSelected());
+    }
+
+    @Test
+    public void TC_04_Select_All_Select_Only() {
+        driver.get("https://automationfc.github.io/multiple-fields/");
+        List<WebElement> allCheckboxes = driver.findElements(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input"));
+        for (WebElement checkbox : allCheckboxes) {
+            if (!checkbox.isSelected()) {
+                checkbox.click();
+            }
+        }
+        for (WebElement checkbox : allCheckboxes) {
+            Assert.assertTrue(checkbox.isSelected());
+        }
+
+        driver.manage().deleteAllCookies();
+        driver.navigate().refresh();
+        allCheckboxes = driver.findElements(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input"));
+        for (WebElement checkbox : allCheckboxes) {
+            if (checkbox.isSelected()) {
+                checkbox.click();
+            }
+        }
+        for (WebElement checkbox : allCheckboxes) {
+            Assert.assertFalse(checkbox.isSelected());
+        }
+        for (WebElement checkbox : allCheckboxes) {
+            if (!checkbox.isSelected() && checkbox.getAttribute("value").equals("Heart Attack")) {
+                checkbox.click();
+            }
+        }
+        for (WebElement checkbox : allCheckboxes) {
+            if (checkbox.getAttribute("value").equals("Heart Attack")) {
+                Assert.assertTrue(checkbox.isSelected());
+            } else {
+                Assert.assertFalse(checkbox.isSelected());
+            }
+        }
+    }
+
+    @Test
+    public void TC_05_Custom_RadioBtn() {
+        driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
         sleepInSeconds(1);
-        Assert.assertFalse(checkbox1.isSelected());
-        Assert.assertFalse(checkbox2.isSelected());
+        WebElement radioBtnElement = driver.findElement(By.xpath("//div[text()='Đăng ký cho người thân']/preceding-sibling::div/input"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radioBtnElement);
+        sleepInSeconds(1);
+        Assert.assertTrue(radioBtnElement.isSelected());
     }
 
     @AfterClass

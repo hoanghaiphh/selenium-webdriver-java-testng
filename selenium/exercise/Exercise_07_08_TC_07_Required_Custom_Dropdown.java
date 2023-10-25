@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_07_08_TC07Required_Custom_Dropdown {
+public class Exercise_07_08_TC_07_Required_Custom_Dropdown {
     WebDriver driver;
     WebDriverWait explicitWait;
 
