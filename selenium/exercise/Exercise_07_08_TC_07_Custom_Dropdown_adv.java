@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_07_08_TC_07_Optional_Custom_Dropdown {
+public class Exercise_07_08_TC_07_Custom_Dropdown_adv {
     WebDriver driver;
     WebDriverWait explicitWait;
 
@@ -55,6 +55,9 @@ public class Exercise_07_08_TC_07_Optional_Custom_Dropdown {
         driver.get("https://www.honda.com.vn/o-to/du-toan-chi-phi");
         sleepInSeconds(1);
 
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        jsExecutor.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.cssSelector("div[class='container']")));
+
         dropdownSelectJsClick("button#selectize-input", "div.dropdown-menu.show>a", "HR-V RS (Đen ánh độc tôn/ xám phong cách)");
         Assert.assertEquals(driver.findElement(By.cssSelector("button#selectize-input")).getText(), "HR-V RS (Đen ánh độc tôn/ xám phong cách)");
 
@@ -66,9 +69,6 @@ public class Exercise_07_08_TC_07_Optional_Custom_Dropdown {
         areaDropdown.selectByVisibleText("Khu vực III");
         Assert.assertEquals(areaDropdown.getFirstSelectedOption().getText(), "Khu vực III");
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.cssSelector("div.div-cost-estimates")));
-        sleepInSeconds(1);
-
         WebElement totalCost = driver.findElement(By.cssSelector("div.cost-price span.total"));
         Assert.assertEquals(totalCost.getText(), "");
         driver.findElement(By.cssSelector("input.btn-cost-estimates")).click();
@@ -77,6 +77,8 @@ public class Exercise_07_08_TC_07_Optional_Custom_Dropdown {
 
         driver.navigate().refresh();
         sleepInSeconds(1);
+
+        jsExecutor.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.cssSelector("div[class='container']")));
 
         dropdownSelectJsClick("button#selectize-input", "div.dropdown-menu.show>a", "CIVIC TYPE R (Trắng/Đỏ/Xanh/Xám/Đen)");
         Assert.assertEquals(driver.findElement(By.cssSelector("button#selectize-input")).getText(), "CIVIC TYPE R (Trắng/Đỏ/Xanh/Xám/Đen)");
@@ -88,9 +90,6 @@ public class Exercise_07_08_TC_07_Optional_Custom_Dropdown {
         areaDropdown = new Select(driver.findElement(By.cssSelector("select#registration_fee")));
         areaDropdown.selectByVisibleText("Khu vực II");
         Assert.assertEquals(areaDropdown.getFirstSelectedOption().getText(), "Khu vực II");
-
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.cssSelector("div.div-cost-estimates")));
-        sleepInSeconds(1);
 
         totalCost = driver.findElement(By.cssSelector("div.cost-price span.total"));
         Assert.assertEquals(totalCost.getText(), "");
