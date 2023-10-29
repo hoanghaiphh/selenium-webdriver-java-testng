@@ -19,6 +19,8 @@ public class Exercise_04_05_Register {
     public void beforeClass() {
         if (osName.contains("Windows")) {
             System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
+        } else if (osName.contains("Linux")) {
+            System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/geckodriver-linux");
         } else {
             System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/geckodriver");
         }
@@ -28,7 +30,6 @@ public class Exercise_04_05_Register {
         driver.manage().window().maximize();
 
         driver.get("https://alada.vn/tai-khoan/dang-ky.html");
-
     }
 
     @Test
@@ -48,7 +49,6 @@ public class Exercise_04_05_Register {
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtPassword-error")).getText(),"Vui lòng nhập mật khẩu");
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtCPassword-error")).getText(),"Vui lòng nhập lại mật khẩu");
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtPhone-error")).getText(),"Vui lòng nhập số điện thoại.");
-
     }
 
     @Test
@@ -70,7 +70,6 @@ public class Exercise_04_05_Register {
 
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtEmail-error")).getText(),"Vui lòng nhập email hợp lệ");
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtCEmail-error")).getText(),"Email nhập lại không đúng");
-
     }
 
     @Test
@@ -91,7 +90,6 @@ public class Exercise_04_05_Register {
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtCEmail-error")).getText(),"Email nhập lại không đúng");
-
     }
 
     @Test
@@ -113,7 +111,6 @@ public class Exercise_04_05_Register {
 
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtPassword-error")).getText(),"Mật khẩu phải có ít nhất 6 ký tự");
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtCPassword-error")).getText(),"Mật khẩu phải có ít nhất 6 ký tự");
-
     }
 
     @Test
@@ -134,7 +131,6 @@ public class Exercise_04_05_Register {
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtCPassword-error")).getText(),"Mật khẩu bạn nhập không khớp");
-
     }
 
     @Test
@@ -171,7 +167,6 @@ public class Exercise_04_05_Register {
 
         driver.findElement(By.cssSelector("button[type='submit']")).click();
         Assert.assertEquals(driver.findElement(By.cssSelector("label#txtPhone-error")).getText(),"Số điện thoại bắt đầu bằng: 09 - 03 - 012 - 016 - 018 - 019 - 088 - 03 - 05 - 07 - 08");
-
     }
 
     @AfterClass
