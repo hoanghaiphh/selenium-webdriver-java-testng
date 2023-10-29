@@ -20,7 +20,7 @@ public class Exercise_04_05_Register {
         if (osName.contains("Windows")) {
             System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
         } else if (osName.contains("Linux")) {
-            System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/geckodriver-linux");
+            System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/linux/geckodriver");
         } else {
             System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/geckodriver");
         }
