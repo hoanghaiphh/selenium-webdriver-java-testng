@@ -12,19 +12,9 @@ import java.time.Duration;
 
 public class Exercise_04_05_Register {
     WebDriver driver;
-    String projectPath = System.getProperty("user.dir");
-    String osName = System.getProperty("os.name");
 
     @BeforeClass
     public void beforeClass() {
-        if (osName.contains("Windows")) {
-            System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
-        } else if (osName.contains("Linux")) {
-            System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/linux/geckodriver");
-        } else {
-            System.setProperty("webdriver.gecko.driver", projectPath + "/browserDrivers/geckodriver");
-        }
-
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
