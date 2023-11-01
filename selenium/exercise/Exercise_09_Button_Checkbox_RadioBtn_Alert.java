@@ -181,6 +181,7 @@ public class Exercise_09_Button_Checkbox_RadioBtn_Alert {
     @Test
     public void TC_06_Custom_Checkbox_RadioBtn_GoogleDocs() {
         driver.get("https://docs.google.com/forms/d/e/1FAIpQLSfiypnd69zhuDkjKgqvpID9kwO29UCzeCVrGGtbNPZXQok0jA/viewform");
+        sleepInSeconds(2);
         List<WebElement> radioGroup = driver.findElements(By.cssSelector("div[role='radio']"));
         for (WebElement radio : radioGroup) {
             Assert.assertEquals(radio.getAttribute("aria-checked"), "false");
