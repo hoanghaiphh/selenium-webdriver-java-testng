@@ -4,17 +4,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_09_Button_Checkbox_RadioBtn {
+public class Exercise_09_Button_Checkbox_RadioBtn_Alert {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {
@@ -172,6 +176,128 @@ public class Exercise_09_Button_Checkbox_RadioBtn {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radioBtnElement);
         sleepInSeconds(1);
         Assert.assertTrue(radioBtnElement.isSelected());
+    }
+
+    @Test
+    public void TC_06_Custom_Checkbox_RadioBtn_GoogleDocs() {
+        driver.get("https://docs.google.com/forms/d/e/1FAIpQLSfiypnd69zhuDkjKgqvpID9kwO29UCzeCVrGGtbNPZXQok0jA/viewform");
+        List<WebElement> radioGroup = driver.findElements(By.cssSelector("div[role='radio']"));
+        for (WebElement radio : radioGroup) {
+            Assert.assertEquals(radio.getAttribute("aria-checked"), "false");
+        }
+        for (WebElement radio : radioGroup) {
+            if (radio.getAttribute("data-value").equals("Hà Nội")) {
+                radio.click();
+                sleepInSeconds(1);
+                Assert.assertEquals(radio.getAttribute("aria-checked"), "true");
+            } else {
+                Assert.assertEquals(radio.getAttribute("aria-checked"), "false");
+            }
+        }
+
+        WebElement sendBtn = driver.findElement(By.xpath("//span[text()='Gửi']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(false);", sendBtn);
+        sleepInSeconds(1);
+        List<WebElement> checkboxGroup = driver.findElements(By.cssSelector("div[role='checkbox']"));
+        for (WebElement checkbox : checkboxGroup) {
+            Assert.assertEquals(checkbox.getAttribute("aria-checked"), "false");
+        }
+        for (WebElement checkbox : checkboxGroup) {
+            if (checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("false")
+                    || !checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("true")) {
+                checkbox.click();
+                sleepInSeconds(1);
+            }
+        }
+        for (WebElement checkbox : checkboxGroup) {
+            if (checkbox.getAttribute("aria-label").startsWith("Quảng")) {
+                Assert.assertEquals(checkbox.getAttribute("aria-checked"), "true");
+            } else {
+                Assert.assertEquals(checkbox.getAttribute("aria-checked"), "false");
+            }
+        }
+
+        sendBtn.click();
+        sleepInSeconds(1);
+    }
+
+    @Test
+    public void TC_07_08_09_Alert() {
+        driver.get("https://automationfc.github.io/basic-form/index.html");
+        WebDriverWait explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement result = driver.findElement(By.cssSelector("p#result"));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.xpath("//button[text()='Click for JS Alert']")));
+        driver.findElement(By.xpath("//button[text()='Click for JS Alert']")).click();
+        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS Alert");
+        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
+        sleepInSeconds(1);
+        Assert.assertEquals(result.getText(), "You clicked an alert successfully");
+
+        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
+        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS Confirm");
+        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
+        sleepInSeconds(1);
+        Assert.assertEquals(result.getText(), "You clicked: Ok");
+        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
+        explicitWait.until(ExpectedConditions.alertIsPresent()).dismiss();
+        sleepInSeconds(1);
+        Assert.assertEquals(result.getText(), "You clicked: Cancel");
+
+        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
+        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS prompt");
+        String alertSendKeys = "Automation Testing";
+        explicitWait.until(ExpectedConditions.alertIsPresent()).sendKeys(alertSendKeys);
+        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
+        sleepInSeconds(1);
+        Assert.assertEquals(result.getText(), "You entered: " + alertSendKeys);
+        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
+        explicitWait.until(ExpectedConditions.alertIsPresent()).dismiss();
+        sleepInSeconds(1);
+        Assert.assertEquals(result.getText(), "You entered: null");
+    }
+
+    @Test
+    public void TC_11_12_Authentication_Alert() throws IOException {
+        driver.get("http://admin:admin@the-internet.herokuapp.com/basic_auth");
+        sleepInSeconds(1);
+        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+        driver.quit();
+        driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.manage().window().maximize();
+        if (System.getProperty("os.name").contains("Windows")) {
+            String username = "admin", password = "admin";
+            String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
+            String chromeAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_chrome.exe";
+            if (driver.toString().contains("firefox")) {
+                Runtime.getRuntime().exec(new String[]{firefoxAuthen, username, password});
+            } else if (driver.toString().contains("chrome")) {
+                Runtime.getRuntime().exec(new String[]{chromeAuthen, username, password});
+            }
+            driver.get("http://the-internet.herokuapp.com/basic_auth");
+            sleepInSeconds(5);
+            Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+        }
+
+        driver.quit();
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.manage().window().maximize();
+        if (System.getProperty("os.name").contains("Windows")) {
+            String username = "admin", password = "admin";
+            String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
+            String chromeAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_chrome.exe";
+            if (driver.toString().contains("firefox")) {
+                Runtime.getRuntime().exec(new String[]{firefoxAuthen, username, password});
+            } else if (driver.toString().contains("chrome")) {
+                Runtime.getRuntime().exec(new String[]{chromeAuthen, username, password});
+            }
+            driver.get("http://the-internet.herokuapp.com/basic_auth");
+            sleepInSeconds(5);
+            Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+        }
     }
 
     @AfterClass

@@ -2,6 +2,8 @@ package exercise;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -10,7 +12,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Random;
 
-public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
+public class Exercise_07_08_Textbox_TextArea {
     WebDriver driver;
 
     @BeforeClass
@@ -33,9 +35,9 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         return "automation" + rand.nextInt(999999) + "@gmail.com";
         // return "automation" + new Random().nextInt(999999) + "@gmail.com"
     }
-
     @Test
-    public void Login_01_Empty_Data() {
+    public void TC_01_Login() {
+        // Login with empty data
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
@@ -45,10 +47,8 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
 
         Assert.assertEquals(driver.findElement(By.id("advice-required-entry-email")).getText(),"This is a required field.");
         Assert.assertEquals(driver.findElement(By.id("advice-required-entry-pass")).getText(),"This is a required field.");
-    }
 
-    @Test
-    public void Login_02_Invalid_Email() {
+        // Login with invalid email
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
@@ -59,10 +59,8 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         driver.findElement(By.id("send2")).click();
 
         Assert.assertEquals(driver.findElement(By.id("advice-validate-email-email")).getText(),"Please enter a valid email address. For example johndoe@domain.com.");
-    }
 
-    @Test
-    public void Login_03_Invalid_Password() {
+        // Login with invalid password
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
@@ -73,10 +71,8 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         driver.findElement(By.id("send2")).click();
 
         Assert.assertEquals(driver.findElement(By.id("advice-validate-password-pass")).getText(),"Please enter 6 or more characters without leading or trailing spaces.");
-    }
 
-    @Test
-    public void Login_04_Incorrect_Email() {
+        // Login with incorrect email
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
@@ -89,20 +85,16 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         driver.findElement(By.id("send2")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
-    }
 
-    String email = getEmailRandom();
-
-    @Test
-    public void Login_05_Success() {
+        // Register
         driver.get("http://live.techpanda.org/");
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
         driver.findElement(By.xpath("//span[text()='Create an Account']")).click();
 
         String firstName = "Hai", middleName = "Hoang", lastName = "Phan", password = "Abc@1234";
         String fullName = firstName + " " + middleName + " " + lastName;
+        String email = getEmailRandom();
 
-        // Register
         driver.findElement(By.cssSelector("input[id='firstname']")).sendKeys(firstName);
         driver.findElement(By.cssSelector("input[id='middlename']")).sendKeys(middleName);
         driver.findElement(By.cssSelector("input[id='lastname']")).sendKeys(lastName);
@@ -182,10 +174,8 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         driver.findElement(By.xpath("//header//span[text()='Account']")).click();
         driver.findElement(By.xpath("//a[text()='Log Out']")).click();
         sleepInSeconds(6);
-    }
 
-    @Test
-    public void Login_06_Incorrect_Password() {
+        // Login with incorrect password
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
@@ -200,7 +190,7 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
     }
 
     @Test
-    public void TC_02_Textbox_TextArea() {
+    public void TC_02_noShow_attributeValue() {
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
         driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
@@ -308,7 +298,7 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
     }
 
     @Test
-    public void TC_03_BlockAds_DismissAlert() {
+    public void TC_03_BlockAds_Alert() {
         driver.get("https://demo.guru99.com/");
         sleepInSeconds(1);
 
@@ -385,7 +375,8 @@ public class Exercise_07_08_TC_01_02_03_Textbox_TextArea {
         driver.findElement(By.cssSelector("input[name='sub']")).click();
         sleepInSeconds(1);
 
-        driver.switchTo().alert().dismiss();
+        WebDriverWait explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
         sleepInSeconds(1);
 
         driver.findElement(By.cssSelector("input[name='cusid']")).sendKeys(customerID);
