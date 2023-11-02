@@ -1,6 +1,6 @@
 package webdriver;
 
-public class Topic_26Ext_Parameter {
+public class Topic_26_Parameter {
 
     static String fullNameGlobal = "First";
 
@@ -17,8 +17,7 @@ public class Topic_26Ext_Parameter {
         System.out.println(getFullName()); // in ra fullNameGlobal từ hàm getFullName()
 
 
-
-        Topic_26Ext_Parameter topic = new Topic_26Ext_Parameter(); // khai báo biến object để sử dụng
+        Topic_26_Parameter topic = new Topic_26_Parameter(); // khai báo biến object để sử dụng
         topic.setFullName2("Third");
         System.out.println(topic.getFullName2());
 
@@ -36,7 +35,6 @@ public class Topic_26Ext_Parameter {
     public String getFullName2() {
         return fullNameGlobal;
     }
-
 
 
 }

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class Topic_11Ext_Data_Type {
+public class Topic_11_Data_Type {
     // Kieu du lieu trong java - 2 nhom
 
     // I - Kieu du lieu nguyen thuy (Primitive Type)
@@ -37,7 +37,7 @@ public class Topic_11Ext_Data_Type {
     // Class
     FirefoxDriver firefoxDriver = new FirefoxDriver();
     Select select = new Select(firefoxDriver.findElement(By.className("")));
-    Topic_11Ext_Data_Type topic01 = new Topic_11Ext_Data_Type();
+    Topic_11_Data_Type topic01 = new Topic_11_Data_Type();
 
     // Interface
     WebDriver driver;

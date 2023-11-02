@@ -2,12 +2,15 @@ package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.locators.RelativeLocator;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Topic_11_Selenium_Locator {
     WebDriver driver;
@@ -23,6 +26,7 @@ public class Topic_11_Selenium_Locator {
         }
 
         driver = new FirefoxDriver();
+        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.get("https://demo.nopcommerce.com/register");
     }
@@ -47,26 +51,20 @@ public class Topic_11_Selenium_Locator {
 
     @Test
     public void TC_01_ID() {
-        // <input type="text" data-val="true" data-val-required="First name is required." id="FirstName" name="FirstName">
         driver.findElement(By.id("FirstName")).sendKeys("Keane");
-        // System.out.println(driver.findElement(By.id("FirstName")));
     }
-
     @Test
     public void TC_02_Class() {
         driver.findElement(By.className("header-logo"));
     }
-
     @Test
     public void TC_03_Name() {
         driver.findElement(By.name("DateOfBirthDay"));
     }
-
     @Test
     public void TC_04_Tagname() {
         driver.findElements(By.tagName("input"));
     }
-
     @Test
     public void TC_05_Link_Text() {
         // do chinh xac cao
@@ -104,6 +102,7 @@ public class Topic_11_Selenium_Locator {
         // driver.findElement(By.cssSelector("a[href^='addresses']"));
         // driver.findElement(By.cssSelector("a[href$='addresses']"));
     }
+
     @Test
     public void TC_08_XPATH() {
         // CSS vs ID
@@ -126,9 +125,45 @@ public class Topic_11_Selenium_Locator {
         driver.findElement(By.xpath("//a[contains(@href,'viewedproducts')]"));
         driver.findElement(By.xpath("//a[contains(text(),'Recently vie')]"));
     }
+
+    @Test
+    public void TC_09_Relative_Locator() {
+        driver.get("https://demo.nopcommerce.com/login?returnUrl=%2Fregister");
+
+        // Login button
+        By loginButtonBy = By.cssSelector("button.login-button");
+        WebElement loginButtonElement = driver.findElement(By.cssSelector("button.login-button"));
+
+        // Remember me checkbox
+        By rememberMeBy = By.cssSelector("input#RememberMe");
+        WebElement rememberMeElement = driver.findElement(By.cssSelector("input#RememberMe"));
+
+        // Forgot password link
+        WebElement forgotPasswordElement = driver.findElement(By.cssSelector("span.forgot-password"));
+
+        // Password textbox
+        By passwordTextboxBy = By.cssSelector("input#Password");
+
+        // GUI (location/ position)
+        WebElement rememberMeTextElement = driver
+                .findElement(RelativeLocator.with(By.tagName("label"))
+                        .above(loginButtonBy)
+                        .toRightOf(rememberMeElement)
+                        .toLeftOf(forgotPasswordElement)
+                        .below(passwordTextboxBy)
+                        .near(forgotPasswordElement));
+        System.out.println(rememberMeTextElement.getText());
+
+        List<WebElement> alllinks = driver.findElements(RelativeLocator.with(By.tagName("a")));
+        System.out.println(alllinks.size());
+
+        By rememberMeTextBy = RelativeLocator.with(By.tagName("label"))
+                .above(loginButtonElement)
+                .toRightOf(rememberMeBy);
+    }
+
     @AfterClass
-    public void
-    afterClass() {
+    public void afterClass() {
         driver.quit();
     }
 }
