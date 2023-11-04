@@ -36,7 +36,7 @@ public class Exercise_07_08_Textbox_TextArea {
         // return "automation" + new Random().nextInt(999999) + "@gmail.com"
     }
     @Test
-    public void TC_01_Login() {
+    public void TC_01_Register_Login() {
         // Login with empty data
         driver.get("http://live.techpanda.org/");
 
@@ -190,7 +190,7 @@ public class Exercise_07_08_Textbox_TextArea {
     }
 
     @Test
-    public void TC_02_noShow_attributeValue() {
+    public void TC_02_NoShow_AttributeValue() {
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
         driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
@@ -298,7 +298,7 @@ public class Exercise_07_08_Textbox_TextArea {
     }
 
     @Test
-    public void TC_03_BlockAds_Alert() {
+    public void TC_03_BlockAds_AcceptAlert() {
         driver.get("https://demo.guru99.com/");
         sleepInSeconds(1);
 

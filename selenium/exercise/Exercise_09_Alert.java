@@ -77,7 +77,7 @@ public class Exercise_09_Alert {
     }
 
     @Test
-    public void TC_11_Authentication_Alert_Bypass_Link() {
+    public void TC_11a_Authentication_Alert_Bypass_Link() {
         // access directly by link
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -88,7 +88,10 @@ public class Exercise_09_Alert {
         Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
+    }
 
+    @Test
+    public void TC_11b_Authentication_Alert_Bypass_Link() {
         // move from another page
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -111,7 +114,7 @@ public class Exercise_09_Alert {
         return originUrlSplit[0] + "//" + userName + ":" + password + "@" + originUrlSplit[1];
     }
     @Test
-    public void TC_11x_Authentication_Alert_Bypass_Link() {
+    public void TC_11c_Authentication_Alert_Bypass_Link() {
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
@@ -125,7 +128,7 @@ public class Exercise_09_Alert {
     }
 
     @Test
-    public void TC_12_Authentication_Alert_AutoIT() throws IOException {
+    public void TC_12a_Authentication_Alert_AutoIT() throws IOException {
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
@@ -144,7 +147,9 @@ public class Exercise_09_Alert {
             Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
         }
         driver.quit();
-
+    }
+    @Test
+    public void TC_12b_Authentication_Alert_AutoIT() throws IOException {
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();

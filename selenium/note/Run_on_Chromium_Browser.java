@@ -22,32 +22,39 @@ public class Run_on_Chromium_Browser {
 
     @Test
     public void TC_01_CocCoc() throws InterruptedException {
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("C:\\Program Files\\CocCoc\\Browser\\Application\\browser.exe");
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        if (System.getProperty("os.name").contains("Windows")) {
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary("C:\\Program Files\\CocCoc\\Browser\\Application\\browser.exe");
 
-        DevTools devTools = ((HasDevTools) driver).getDevTools();
-        devTools.createSession();
-        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+            driver = new ChromeDriver(options);
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+            driver.manage().window().maximize();
 
-        Map<String, Object> headers = new HashMap<String, Object>();
-        String basicAuthen = "Basic " + new String(new Base64().encode(String.format("%s:%s", "admin", "admin").getBytes()));
-        headers.put("Authorization", basicAuthen);
-        devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
+            DevTools devTools = ((HasDevTools) driver).getDevTools();
+            devTools.createSession();
+            devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-        driver.get("https://the-internet.herokuapp.com/basic_auth");
-        Thread.sleep(1000);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+            Map<String, Object> headers = new HashMap<String, Object>();
+            String basicAuthen = "Basic " + new String(new Base64().encode(String.format("%s:%s", "admin", "admin").getBytes()));
+            headers.put("Authorization", basicAuthen);
+            devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
 
-        driver.quit();
+            driver.get("https://the-internet.herokuapp.com/basic_auth");
+            Thread.sleep(1000);
+            Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+            driver.quit();
+        }
     }
 
     @Test
     public void TC_02_Brave() throws InterruptedException {
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
+        if (System.getProperty("os.name").contains("Windows")) {
+            options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
+        } else if (System.getProperty("os.name").contains("Linux")) {
+            options.setBinary("/opt/brave.com/brave/brave");
+        }
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();

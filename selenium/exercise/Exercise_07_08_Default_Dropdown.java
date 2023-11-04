@@ -38,7 +38,7 @@ public class Exercise_07_08_Default_Dropdown {
     }
 
     @Test
-    public void TC_04_Register_And_Login() {
+    public void TC_04_Default_Dropdown() {
         driver.get("https://demo.nopcommerce.com/");
 
         String firstName = "Automation", lastName = "Testing", password = "Abcd@1234";
@@ -96,7 +96,7 @@ public class Exercise_07_08_Default_Dropdown {
     }
 
     @Test
-    public void TC_06_Register() {
+    public void TC_06_Default_Dropdown() {
         driver.get("https://applitools.com/automating-tests-chrome-devtools-recorder-webinar/");
 
         String firstName = "Automation", lastName = "Testing", company = "Automation FC";

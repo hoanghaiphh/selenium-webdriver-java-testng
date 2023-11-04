@@ -39,7 +39,7 @@ public class Exercise_09_Checkbox_RadioButton {
     }
 
     @Test
-    public void TC_02_Default_Checkbox_RadioBtn() {
+    public void TC_02_Default() {
         driver.get("https://demos.telerik.com/kendo-ui/checkbox/index");
         sleepInSeconds(1);
 
@@ -60,7 +60,7 @@ public class Exercise_09_Checkbox_RadioButton {
     }
 
     @Test
-    public void TC_03_Default_Checkbox_RadioBtn() {
+    public void TC_03_Default() {
         driver.get("https://material.angular.io/components/radio/examples");
         sleepInSeconds(1);
 
@@ -128,7 +128,7 @@ public class Exercise_09_Checkbox_RadioButton {
     }
 
     @Test
-    public void TC_05_Custom_RadioBtn_jsClick() {
+    public void TC_05_Custom_jsClick() {
         driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
         sleepInSeconds(1);
         WebElement radioBtnElement = driver.findElement(By.xpath("//div[text()='Đăng ký cho người thân']/preceding-sibling::div/input"));
@@ -138,7 +138,7 @@ public class Exercise_09_Checkbox_RadioButton {
     }
 
     @Test
-    public void TC_06_Custom_Checkbox_RadioBtn_GoogleDocs() {
+    public void TC_06_Custom_GoogleDocs() {
         driver.get("https://docs.google.com/forms/d/e/1FAIpQLSfiypnd69zhuDkjKgqvpID9kwO29UCzeCVrGGtbNPZXQok0jA/viewform");
         sleepInSeconds(2);
         List<WebElement> radioGroup = driver.findElements(By.cssSelector("div[role='radio']"));

@@ -52,7 +52,8 @@ public class Exercise_07_08_Custom_Dropdown {
         sleepInSeconds(1);
     }
     @Test
-    public void TC_01_JQuery() {
+    public void TC_07_Required() {
+        // JQuery
         driver.get("https://jqueryui.com/resources/demos/selectmenu/default.html");
         sleepInSeconds(1);
 
@@ -67,9 +68,8 @@ public class Exercise_07_08_Custom_Dropdown {
 
         dropdownSelect("span#salutation-button", "ul#salutation-menu div", "Dr.");
         Assert.assertEquals(driver.findElement(By.cssSelector("span#salutation-button span.ui-selectmenu-text")).getText(),"Dr.");
-    }
-    @Test
-    public void TC_02_ReactJS() {
+
+        // ReactJS
         driver.get("https://react.semantic-ui.com/maximize/dropdown-example-selection/");
         sleepInSeconds(1);
 
@@ -81,9 +81,8 @@ public class Exercise_07_08_Custom_Dropdown {
 
         dropdownSelect("i.dropdown.icon", "div.item span.text", "Justen Kitsune");
         Assert.assertEquals(driver.findElement(By.cssSelector("div.divider.text")).getText(),"Justen Kitsune");
-    }
-    @Test
-    public void TC_03_VueJS() {
+
+        // VueJS
         driver.get("https://mikerodham.github.io/vue-dropdowns/");
         sleepInSeconds(1);
 
@@ -95,9 +94,8 @@ public class Exercise_07_08_Custom_Dropdown {
 
         dropdownSelect("li.dropdown-toggle", "ul.dropdown-menu a", "Second Option");
         Assert.assertEquals(driver.findElement(By.cssSelector("li.dropdown-toggle")).getText(),"Second Option");
-    }
-    @Test
-    public void TC_04_Default_Dropdown() {
+
+        // Default
         driver.get("https://demo.nopcommerce.com/register?returnUrl=%2F");
         sleepInSeconds(1);
 
@@ -133,7 +131,7 @@ public class Exercise_07_08_Custom_Dropdown {
         sleepInSeconds(1);
     }
     @Test
-    public void TC_05_Editable() {
+    public void TC_07_required_Editable() {
         driver.get("https://react.semantic-ui.com/maximize/dropdown-example-search-selection/");
         sleepInSeconds(1);
 
@@ -178,7 +176,7 @@ public class Exercise_07_08_Custom_Dropdown {
         sleepInSeconds(1);
     }
     @Test
-    public void TC_06_JQuery_Honda() {
+    public void TC_08_optional_JQuery_Honda() {
         driver.get("https://www.honda.com.vn/o-to/du-toan-chi-phi");
         sleepInSeconds(1);
 
@@ -239,7 +237,7 @@ public class Exercise_07_08_Custom_Dropdown {
         sleepInSeconds(1);
     }
     @Test
-    public void TC_07_Angular_Covid() { // tai sao dropdown page nay khong click bang js dc
+    public void TC_08_optional_Angular_Covid() { // tai sao dropdown page nay khong click bang js dc
         driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
         sleepInSeconds(1);
 
@@ -304,7 +302,7 @@ public class Exercise_07_08_Custom_Dropdown {
         Assert.assertEquals(driver.findElement(By.xpath("//span[text()='January']/parent::label/parent::li/parent::ul/parent::div/preceding-sibling::button/span")).getText(), dropdownText); // verify the text showed at dropdown
     }
     @Test
-    public void TC_08_Multiple_Select() {
+    public void TC_08_optional_Multiple_Select() {
         driver.get("https://multiple-select.wenzhixin.net.cn/templates/template.html?v=189&url=basic.html");
         sleepInSeconds(1);
 
