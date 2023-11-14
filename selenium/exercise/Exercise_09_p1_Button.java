@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Exercise_09_Button {
+public class Exercise_09_p1_Button {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

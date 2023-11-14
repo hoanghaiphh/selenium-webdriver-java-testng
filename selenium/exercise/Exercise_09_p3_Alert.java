@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class Exercise_09_Alert {
+public class Exercise_09_p3_Alert {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {
@@ -129,11 +129,11 @@ public class Exercise_09_Alert {
 
     @Test
     public void TC_12a_Authentication_Alert_AutoIT() throws IOException {
-        driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
-
         if (System.getProperty("os.name").contains("Windows")) {
+            driver = new FirefoxDriver();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+            driver.manage().window().maximize();
+
             String username = "admin", password = "admin";
             String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
             String chromeAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_chrome.exe";
@@ -145,16 +145,17 @@ public class Exercise_09_Alert {
             driver.get("http://the-internet.herokuapp.com/basic_auth");
             sleepInSeconds(7);
             Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+            driver.quit();
         }
-        driver.quit();
     }
     @Test
     public void TC_12b_Authentication_Alert_AutoIT() throws IOException {
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
-
         if (System.getProperty("os.name").contains("Windows")) {
+            driver = new ChromeDriver();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+            driver.manage().window().maximize();
+
             String username = "admin", password = "admin";
             String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
             String chromeAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_chrome.exe";
@@ -166,8 +167,9 @@ public class Exercise_09_Alert {
             driver.get("http://the-internet.herokuapp.com/basic_auth");
             sleepInSeconds(7);
             Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+            driver.quit();
         }
-        driver.quit();
     }
 
     @Test

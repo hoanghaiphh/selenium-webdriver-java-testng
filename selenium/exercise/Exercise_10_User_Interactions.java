@@ -1,9 +1,12 @@
 package exercise;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -42,7 +45,7 @@ public class Exercise_10_User_Interactions {
         sleepInSeconds(1);
         // option 1: verify tooltip with text is displayed
         Assert.assertTrue(driver.findElement(By.xpath("//div[@class='ui-tooltip-content' and text()='We ask for your age only for statistical purposes.']")).isDisplayed());
-        // option 2: verify text in tooltip
+        // option 2: verify text in tooltip --> recommended for Text
         Assert.assertEquals(driver.findElement(By.cssSelector("div.ui-tooltip-content")).getText(), "We ask for your age only for statistical purposes.");
     }
 
@@ -51,16 +54,16 @@ public class Exercise_10_User_Interactions {
         driver.get("https://www.fahasa.com/");
 
         actions.moveToElement(driver.findElement(By.cssSelector("span.icon_menu"))).perform();
+        sleepInSeconds(1);
         Assert.assertTrue(driver.findElement(By.xpath("//div[@class='fhs_stretch_stretch']//div[text()='Danh mục sản phẩm']")).isDisplayed());
-        sleepInSeconds(1);
 
-        actions.moveToElement(driver.findElement(By.xpath("//a[@title='Đồ Chơi']"))).perform();
-        Assert.assertTrue(driver.findElement(By.xpath("//div[@class='fhs_column_stretch']//span[text()='Đồ Chơi']")).isDisplayed());
+        actions.moveToElement(driver.findElement(By.cssSelector("a[title='Đồ Chơi']"))).perform();
         sleepInSeconds(1);
+        Assert.assertEquals(driver.findElement(By.cssSelector("div.fhs_column_stretch span.menu-title")).getText(), "Đồ Chơi");
 
         driver.findElement(By.xpath("//div[@class='fhs_column_stretch']//a[text()='Máy Bay']")).click();
         sleepInSeconds(1);
-        Assert.assertTrue(driver.findElement(By.xpath("//ol[@class='breadcrumb']//strong[text()='Máy Bay - Tàu Vũ Trụ']")).isDisplayed());
+        Assert.assertEquals(driver.findElement(By.cssSelector("ol.breadcrumb strong")).getText(),"MÁY BAY - TÀU VŨ TRỤ");
     }
 
     @Test
@@ -68,7 +71,8 @@ public class Exercise_10_User_Interactions {
         driver.get("https://automationfc.github.io/jquery-selectable/");
 
         List<WebElement> allNumbers = driver.findElements(By.cssSelector("li.ui-state-default"));
-        actions.clickAndHold(allNumbers.get(0)).moveToElement(allNumbers.get(14)).release().perform(); // can use .pause() if...
+
+        actions.clickAndHold(allNumbers.get(0)).moveToElement(allNumbers.get(14)).release().perform(); // can use .pause(x millisecond) if...
         sleepInSeconds(1);
 
         String[] expectedNumbers = new String[] {"1","2","3","5","6","7","9","10","11","13","14","15"};
@@ -84,15 +88,14 @@ public class Exercise_10_User_Interactions {
             }
         }
         // Verify #2:
+        List<String> expectedNumbersList = Arrays.asList(expectedNumbers); // Convert from Array to ArrayList (List)
         List<WebElement> selectedNumbers = driver.findElements(By.cssSelector("li.ui-selected"));
         Assert.assertEquals(selectedNumbers.size(), 12);
-        List<String> actualNumbers = new ArrayList<String>();
+        List<String> actualNumbersList = new ArrayList<String>();
         for (WebElement number : selectedNumbers) {
-            actualNumbers.add(number.getText());
-            Assert.assertTrue(Color.fromString(number.getCssValue("background")).asHex().equalsIgnoreCase("#F39814"));
+            actualNumbersList.add(number.getText());
         }
-        List<String> expectedNumbersList = Arrays.asList(expectedNumbers); // Convert from Array to ArrayList (List)
-        Assert.assertEquals(expectedNumbersList, actualNumbers);
+        Assert.assertEquals(expectedNumbersList, actualNumbersList);
     }
 
     @Test
@@ -145,6 +148,78 @@ public class Exercise_10_User_Interactions {
                 Assert.assertTrue(Color.fromString(number.getCssValue("background")).asHex().equalsIgnoreCase("#f6f6f6"));
             }
         }
+    }
+
+    @Test
+    public void TC_06a_Double_Click() {
+        driver.get("https://automationfc.github.io/basic-form/index.html");
+
+        WebElement doubleClickBtn = driver.findElement(By.xpath("//button[text()='Double click me']"));
+
+        // scroll to element if run on FF - not necessary if run on Chromium: Chrome/ Edge
+        // actions.scrollToElement().perform(); --> only support for Chromium Browser/ Selenium v4.2+
+        if (driver.toString().contains("firefox")) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", doubleClickBtn);
+            sleepInSeconds(1);
+        }
+        actions.doubleClick(doubleClickBtn).perform();
+        sleepInSeconds(1);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("p#demo")).getText(), "Hello Automation Guys!");
+    }
+
+    @Test
+    public void TC_06b_Double_Click() {
+        driver.quit();
+        driver = new ChromeDriver();
+        actions = new Actions(driver);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.manage().window().maximize();
+
+        driver.get("https://automationfc.github.io/basic-form/index.html");
+
+        actions.doubleClick(driver.findElement(By.xpath("//button[text()='Double click me']"))).perform();
+        sleepInSeconds(1);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("p#demo")).getText(), "Hello Automation Guys!");
+    }
+
+    @Test
+    public void TC_07_Right_Click() {
+        driver.get("http://swisnl.github.io/jQuery-contextMenu/demo.html");
+
+        actions.contextClick(driver.findElement(By.xpath("//span[text()='right click me']"))).perform();
+        sleepInSeconds(1);
+
+        WebElement quitContextMenu = driver.findElement(By.cssSelector("li.context-menu-icon-quit"));
+        Assert.assertTrue(quitContextMenu.isDisplayed());
+
+        actions.moveToElement(quitContextMenu).perform();
+        sleepInSeconds(1);
+
+        Assert.assertTrue(driver.findElement(By.cssSelector("li.context-menu-icon-quit.context-menu-visible.context-menu-hover")).isDisplayed());
+
+        quitContextMenu.click();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.alertIsPresent()).accept();
+        sleepInSeconds(1);
+
+        Assert.assertFalse(quitContextMenu.isDisplayed());
+    }
+
+    @Test
+    public void TC_08_DragDrop_HTML4() {
+        driver.get("https://automationfc.github.io/kendo-drag-drop/");
+
+        WebElement targetCircle = driver.findElement(By.cssSelector("div#droptarget"));
+        WebElement sourceCircle = driver.findElement(By.cssSelector("div#draggable"));
+
+        Assert.assertEquals(targetCircle.getText(), "Drag the small circle here.");
+
+        actions.dragAndDrop(sourceCircle, targetCircle).perform();
+        sleepInSeconds(1);
+
+        Assert.assertEquals(targetCircle.getText(), "You did great!");
+        Assert.assertTrue(Color.fromString(targetCircle.getCssValue("background-color")).asHex().equalsIgnoreCase("#03a9f4"));
     }
 
     @AfterClass

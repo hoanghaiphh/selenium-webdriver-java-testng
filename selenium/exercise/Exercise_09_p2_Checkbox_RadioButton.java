@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_09_Checkbox_RadioButton {
+public class Exercise_09_p2_Checkbox_RadioButton {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {
