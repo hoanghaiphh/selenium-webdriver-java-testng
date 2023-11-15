@@ -12,6 +12,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -220,6 +223,48 @@ public class Exercise_10_User_Interactions {
 
         Assert.assertEquals(targetCircle.getText(), "You did great!");
         Assert.assertTrue(Color.fromString(targetCircle.getCssValue("background-color")).asHex().equalsIgnoreCase("#03a9f4"));
+    }
+
+    public String getContentFile(String filePath) throws IOException { // get content of jQuery file as String
+        Charset cs = StandardCharsets.UTF_8;
+        try (FileInputStream stream = new FileInputStream(filePath)) {
+            Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+            StringBuilder builder = new StringBuilder();
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
+            return builder.toString();
+        }
+    }
+    @Test
+    public void TC_09_DragDrop_HTML5_jQuery() throws IOException { // run content of jQuery file + ...
+        // only work with CSS (jQuery)
+        // only work for jQuery site
+        driver.get("https://automationfc.github.io/drag-drop-html5/");
+        sleepInSeconds(3);
+
+        WebElement sourceElement = driver.findElement(By.cssSelector("div#column-a>header"));
+        WebElement targetElement = driver.findElement(By.cssSelector("div#column-b>header"));
+        Assert.assertEquals(sourceElement.getText(), "A");
+        Assert.assertEquals(targetElement.getText(), "B");
+
+        String jsFilePath = System.getProperty("user.dir") + "/jQuery/drag_and_drop_helper.js";
+
+        String jsDragDropHTML5 = getContentFile(jsFilePath) + "$('div#column-a').simulateDragDrop({dropTarget: 'div#column-b'});";
+
+        ((JavascriptExecutor) driver).executeScript(jsDragDropHTML5);
+        sleepInSeconds(3);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#column-a>header")).getText(), "B");
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#column-b>header")).getText(), "A");
+
+        ((JavascriptExecutor) driver).executeScript(jsDragDropHTML5);
+        sleepInSeconds(3);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#column-a>header")).getText(), "A");
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#column-b>header")).getText(), "B");
     }
 
     @AfterClass
