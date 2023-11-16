@@ -1,6 +1,8 @@
 package exercise;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -12,6 +14,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.event.InputEvent;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -239,7 +243,7 @@ public class Exercise_10_User_Interactions {
         }
     }
     @Test
-    public void TC_09_DragDrop_HTML5_jQuery() throws IOException { // run content of jQuery file + ...
+    public void TC_09a_DragDrop_HTML5_jQuery() throws IOException { // run content of jQuery file + ...
         // only work with CSS (jQuery)
         // only work for jQuery site
         driver.get("https://automationfc.github.io/drag-drop-html5/");
@@ -265,6 +269,67 @@ public class Exercise_10_User_Interactions {
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#column-a>header")).getText(), "A");
         Assert.assertEquals(driver.findElement(By.cssSelector("div#column-b>header")).getText(), "B");
+    }
+
+    public void dragAndDropHTML5ByXpath(String sourceLocator, String targetLocator) throws AWTException {
+        WebElement source = driver.findElement(By.xpath(sourceLocator));
+        WebElement target = driver.findElement(By.xpath(targetLocator));
+
+        // Setup robot
+        Robot robot = new Robot();
+        robot.setAutoDelay(500);
+
+        // Get size of elements
+        Dimension sourceSize = source.getSize();
+        Dimension targetSize = target.getSize();
+
+        // Get center distance
+        int xCentreSource = sourceSize.width / 2;
+        int yCentreSource = sourceSize.height / 2;
+        int xCentreTarget = targetSize.width / 2;
+        int yCentreTarget = targetSize.height / 2;
+
+        Point sourceLocation = source.getLocation();
+        Point targetLocation = target.getLocation();
+
+        // Make Mouse coordinate center of element
+        sourceLocation.x += 20 + xCentreSource;
+        sourceLocation.y += 110 + yCentreSource;
+        targetLocation.x += 20 + xCentreTarget;
+        targetLocation.y += 110 + yCentreTarget;
+
+        // Move mouse to drag from location
+        robot.mouseMove(sourceLocation.x, sourceLocation.y);
+
+        // Click and drag
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseMove(((sourceLocation.x - targetLocation.x) / 2) + targetLocation.x, ((sourceLocation.y - targetLocation.y) / 2) + targetLocation.y);
+
+        // Move to final position
+        robot.mouseMove(targetLocation.x, targetLocation.y);
+
+        // Drop
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+    }
+    @Test
+    public void TC_09b_DragDrop_HTML5_Offset() throws AWTException {
+        // Testing...
+        // Passed: Firefox (Mac), Chrome (Windows + Linux), Edge (Windows + Linux)...
+        // Failed: Firefox (Windows + Linux)...
+        driver.get("https://automationfc.github.io/drag-drop-html5/");
+
+        String sourceXpath = "//div[@id='column-a']";
+        String targetXpath = "//div[@id='column-b']";
+
+        dragAndDropHTML5ByXpath(sourceXpath, targetXpath);
+        sleepInSeconds(3);
+
+        dragAndDropHTML5ByXpath(sourceXpath, targetXpath);
+        sleepInSeconds(3);
+
+        dragAndDropHTML5ByXpath(sourceXpath, targetXpath);
+        sleepInSeconds(3);
     }
 
     @AfterClass

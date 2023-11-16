@@ -53,7 +53,7 @@ public class Ignore_Certificate_Errors {
             driver.quit();
         } else {
             System.out.println("Current OS: " + osName);
-            System.out.println("This computer does not run on macOS.");
+            System.out.println("This computer does not have Safari Browser.");
         }
     }
 }
