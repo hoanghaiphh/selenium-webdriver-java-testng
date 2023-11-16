@@ -314,9 +314,6 @@ public class Exercise_10_User_Interactions {
     }
     @Test
     public void TC_09b_DragDrop_HTML5_Offset() throws AWTException {
-        // Testing...
-        // Passed: Firefox (Mac), Chrome (Windows + Linux), Edge (Windows + Linux)...
-        // Failed: Firefox (Windows + Linux)...
         driver.get("https://automationfc.github.io/drag-drop-html5/");
 
         String sourceXpath = "//div[@id='column-a']";

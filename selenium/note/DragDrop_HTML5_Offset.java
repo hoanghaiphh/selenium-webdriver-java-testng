@@ -65,6 +65,10 @@ public class DragDrop_HTML5_Offset {
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
+    // Linux: Firefox (FAILED: do nothing) - Edge/Chrome (FAILED: drag & drop but not switch)
+    // Windows: Firefox (FAILED: drag & drop but not switch) - Chrome/Edge (PASSED)
+    // Mac: Firefox (PASSED) - Edge/Chrome (testing...) - Safari (testing...)
+
     @Test
     public void TC_01_Run_on_Firefox() throws AWTException {
         driver = new FirefoxDriver();

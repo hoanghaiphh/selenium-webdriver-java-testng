@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class Run_on_Chromium_Browser {
+public class ChromeOptions_Brave_CocCoc {
     WebDriver driver;
 
     @Test
