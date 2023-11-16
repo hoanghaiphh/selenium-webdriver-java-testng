@@ -25,6 +25,8 @@ public class Run_on_Chromium_Browser {
         ChromeOptions options = new ChromeOptions();
         if (System.getProperty("os.name").contains("Windows")) {
             options.setBinary("C:\\Program Files\\CocCoc\\Browser\\Application\\browser.exe");
+        } else if (System.getProperty("os.name").contains("Mac")) {
+            options.setBinary("/Applications/CocCoc.app/Contents/MacOS/CocCoc");
         }
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -53,6 +55,8 @@ public class Run_on_Chromium_Browser {
             options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
         } else if (System.getProperty("os.name").contains("Linux")) {
             options.setBinary("/opt/brave.com/brave/brave");
+        } else if (System.getProperty("os.name").contains("Mac")) {
+            options.setBinary("/Applications/Brave Browser.app/Contents/MacOS/Brave Browser");
         }
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
