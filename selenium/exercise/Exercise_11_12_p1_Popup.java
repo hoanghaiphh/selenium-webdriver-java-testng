@@ -1,9 +1,6 @@
 package exercise;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -65,7 +62,7 @@ public class Exercise_11_12_p1_Popup {
         driver.findElement(By.cssSelector("input#user-login")).sendKeys("automation@gmail.com");
         driver.findElement(By.cssSelector("input#user-password")).sendKeys("123456");
         driver.findElement(By.cssSelector("button#btn-submit-login")).click();
-        sleepInSeconds(1);
+        sleepInSeconds(2);
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#password-form-login-message")).getText(), "Sai tên đăng nhập hoặc mật khẩu");
 
@@ -123,6 +120,7 @@ public class Exercise_11_12_p1_Popup {
 
         // this case: before popup appeared --> not in DOM | after popup appeared --> in DOM | after close popup --> in DOM
         // popup NOT appeared immediately after page load
+
         List<WebElement> popup = driver.findElements(By.cssSelector("div.lepopup-element-rectangle.lepopup-animated"));
         if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
             driver.findElement(By.cssSelector("div.lepopup-fadeIn a")).click();
@@ -149,6 +147,7 @@ public class Exercise_11_12_p1_Popup {
 
         // this case: popup always in DOM
         // popup NOT appeared immediately after page load
+
         if (driver.findElement(By.cssSelector("div.tve-leads-conversion-object")).isDisplayed()) {
             driver.findElement(By.cssSelector("svg.tcb-icon")).click();
             sleepInSeconds(1);
@@ -167,6 +166,7 @@ public class Exercise_11_12_p1_Popup {
 
         // this case: popup always in DOM
         // popup appeared immediately after page load
+
         if (driver.findElement(By.cssSelector("div.pop-container")).isDisplayed()) {
             driver.findElement(By.cssSelector("div.close")).click();
             sleepInSeconds(1);
@@ -186,7 +186,9 @@ public class Exercise_11_12_p1_Popup {
 
         // this case: before popup appeared --> in DOM | after popup appeared --> in DOM | after close popup --> not in DOM
         // popup appeared immediately after page load
-        if (driver.findElement(By.cssSelector("div.popup-content")).isDisplayed()) {
+
+        List<WebElement> popup = driver.findElements(By.cssSelector("div.popup-content"));
+        if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
             driver.findElement(By.cssSelector("button#close-popup")).click();
             sleepInSeconds(1);
         }
@@ -195,6 +197,26 @@ public class Exercise_11_12_p1_Popup {
         sleepInSeconds(1);
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div.sign-up-form>h2")).getText(), "Đăng ký tài khoản");
+    }
+
+    @Test
+    public void TC_Ext_Shadow_DOM() {
+        driver.get("https://shopee.vn/");
+        sleepInSeconds(1); // set more sleep time to close popup || Debug --> no popup case
+
+        // before close --> in DOM | after close --> not in DOM
+
+        SearchContext shadowRoot = driver.findElement(By.cssSelector("shopee-banner-popup-stateful")).getShadowRoot();
+
+        List<WebElement> popup = shadowRoot.findElements(By.cssSelector("div.home-popup__content")); // Selenium v4.14.1 not support By.xpath/ By.tagName
+        if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
+            shadowRoot.findElement(By.cssSelector("div.shopee-popup__close-btn")).click();
+            sleepInSeconds(1);
+        }
+
+        driver.findElement(By.cssSelector("input.shopee-searchbar-input__input")).sendKeys("Iphone 15 Pro Max");
+        driver.findElement(By.cssSelector("button.shopee-searchbar__search-button")).click();
+        sleepInSeconds(2);
     }
 
     @AfterClass
