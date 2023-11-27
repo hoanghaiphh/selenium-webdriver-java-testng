@@ -1,7 +1,11 @@
 package exercise;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -19,6 +23,13 @@ public class Exercise_11_12_p1_Popup {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<WebElement> reduceWaitFindElements(By by) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        List<WebElement> listResult = driver.findElements(by);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        return listResult;
     }
 
     @BeforeClass
@@ -55,14 +66,14 @@ public class Exercise_11_12_p1_Popup {
         driver.get("https://skills.kynaenglish.vn/");
 
         driver.findElement(By.cssSelector("a.login-btn")).click();
-        sleepInSeconds(1);
+        sleepInSeconds(3);
 
         Assert.assertTrue(driver.findElement(By.cssSelector("div#k-popup-account-login-mb div.modal-content")).isDisplayed());
 
         driver.findElement(By.cssSelector("input#user-login")).sendKeys("automation@gmail.com");
         driver.findElement(By.cssSelector("input#user-password")).sendKeys("123456");
         driver.findElement(By.cssSelector("button#btn-submit-login")).click();
-        sleepInSeconds(2);
+        sleepInSeconds(3);
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#password-form-login-message")).getText(), "Sai tên đăng nhập hoặc mật khẩu");
 
@@ -94,8 +105,8 @@ public class Exercise_11_12_p1_Popup {
         driver.findElement(By.cssSelector("button.btn-close")).click();
         sleepInSeconds(1);
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5)); // reduce time for running TC
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.ReactModal__Content>div")).size(), 0);
+        // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5)); --> reduce time for running TC
+        Assert.assertEquals(reduceWaitFindElements(By.cssSelector("div.ReactModal__Content>div")).size(), 0);
     }
 
     @Test
@@ -110,18 +121,17 @@ public class Exercise_11_12_p1_Popup {
         driver.findElement(By.xpath("//div[text()='Sign Up']/parent::div/parent::div/img")).click();
         sleepInSeconds(1);
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        Assert.assertEquals(driver.findElements(By.xpath("//div[text()='Sign Up']/parent::div/parent::div")).size(), 0);
+        Assert.assertEquals(reduceWaitFindElements(By.xpath("//div[text()='Sign Up']/parent::div/parent::div")).size(), 0);
     }
 
     @Test
     public void TC_05_Random_Popup_notIn_DOM() {
-        driver.get("https://www.javacodegeeks.com/");
-
         // this case: before popup appeared --> not in DOM | after popup appeared --> in DOM | after close popup --> in DOM
         // popup NOT appeared immediately after page load
 
-        List<WebElement> popup = driver.findElements(By.cssSelector("div.lepopup-element-rectangle.lepopup-animated"));
+        driver.get("https://www.javacodegeeks.com/");
+
+        List<WebElement> popup = reduceWaitFindElements(By.cssSelector("div.lepopup-element-rectangle.lepopup-animated"));
         if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
             driver.findElement(By.cssSelector("div.lepopup-fadeIn a")).click();
             sleepInSeconds(1);
@@ -131,29 +141,29 @@ public class Exercise_11_12_p1_Popup {
         driver.findElement(By.cssSelector("button#search-submit")).click();
         sleepInSeconds(1);
 
-        Assert.assertEquals(driver.findElements(By.cssSelector("h2.post-title")).get(0).getText(), "Agile Testing Explained");
+        Assert.assertEquals(reduceWaitFindElements(By.cssSelector("h2.post-title")).get(0).getText(), "Agile Testing Explained");
     }
 
-    /*public WebElement closePopupFindElement(By locator) { // override findElement
+    /*public WebElement closePopupFindElement(By by) { // override findElement
         if (driver.findElement(By.cssSelector("div.tve-leads-conversion-object")).isDisplayed()) {
             driver.findElement(By.cssSelector("svg.tcb-icon")).click();
             sleepInSeconds(1);
         }
-        return driver.findElement(locator);
+        return driver.findElement(by);
     }*/
     @Test
     public void TC_06a_Random_Popup_In_DOM() {
-        driver.get("https://vnk.edu.vn/");
-
         // this case: popup always in DOM
         // popup NOT appeared immediately after page load
+
+        driver.get("https://vnk.edu.vn/");
 
         if (driver.findElement(By.cssSelector("div.tve-leads-conversion-object")).isDisplayed()) {
             driver.findElement(By.cssSelector("svg.tcb-icon")).click();
             sleepInSeconds(1);
         }
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", driver.findElement(By.xpath("//button[text()='Danh sách khóa học']")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(By.xpath("//button[text()='Danh sách khóa học']")));
         sleepInSeconds(1);
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div.title-content h1")).getText(), "Lịch Khai Giảng");
@@ -161,11 +171,31 @@ public class Exercise_11_12_p1_Popup {
 
     @Test
     public void TC_06b_Random_Popup_In_DOM() {
-        driver.get("http://www.kmplayer.com/");
+        // this case: popup always in DOM
+        // popup NOT appeared immediately after page load
+
+        // waiting for pop up appeared --> close pop up
+        driver.get("https://vnk.edu.vn/");
+
+        WebDriverWait explicitWait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        explicitWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div.tve-leads-conversion-object"))));
+
+        driver.findElement(By.cssSelector("svg.tcb-icon")).click();
         sleepInSeconds(1);
 
+        driver.findElement(By.xpath("//button[text()='Danh sách khóa học']")).click();
+        sleepInSeconds(1);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("div.title-content h1")).getText(), "Lịch Khai Giảng");
+    }
+
+    @Test
+    public void TC_06c_Random_Popup_In_DOM() {
         // this case: popup always in DOM
         // popup appeared immediately after page load
+
+        driver.get("http://www.kmplayer.com/");
+        sleepInSeconds(1);
 
         if (driver.findElement(By.cssSelector("div.pop-container")).isDisplayed()) {
             driver.findElement(By.cssSelector("div.close")).click();
@@ -181,13 +211,12 @@ public class Exercise_11_12_p1_Popup {
 
     @Test
     public void TC_07_Random_Popup_notIn_DOM() {
-        driver.get("https://dehieu.vn/");
-        sleepInSeconds(1);
-
         // this case: before popup appeared --> in DOM | after popup appeared --> in DOM | after close popup --> not in DOM
         // popup appeared immediately after page load
 
-        List<WebElement> popup = driver.findElements(By.cssSelector("div.popup-content"));
+        driver.get("https://dehieu.vn/");
+
+        List<WebElement> popup = reduceWaitFindElements(By.cssSelector("div.popup-content"));
         if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
             driver.findElement(By.cssSelector("button#close-popup")).click();
             sleepInSeconds(1);
@@ -201,18 +230,20 @@ public class Exercise_11_12_p1_Popup {
 
     @Test
     public void TC_Ext_Shadow_DOM() {
+        // before close --> in DOM | after close --> not in DOM
+
         driver.get("https://shopee.vn/");
         sleepInSeconds(1); // set more sleep time to close popup || Debug --> no popup case
 
-        // before close --> in DOM | after close --> not in DOM
-
         SearchContext shadowRoot = driver.findElement(By.cssSelector("shopee-banner-popup-stateful")).getShadowRoot();
 
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
         List<WebElement> popup = shadowRoot.findElements(By.cssSelector("div.home-popup__content")); // Selenium v4.14.1 not support By.xpath/ By.tagName
         if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
             shadowRoot.findElement(By.cssSelector("div.shopee-popup__close-btn")).click();
             sleepInSeconds(1);
         }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
         driver.findElement(By.cssSelector("input.shopee-searchbar-input__input")).sendKeys("Iphone 15 Pro Max");
         driver.findElement(By.cssSelector("button.shopee-searchbar__search-button")).click();
