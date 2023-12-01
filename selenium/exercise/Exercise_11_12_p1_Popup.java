@@ -228,28 +228,6 @@ public class Exercise_11_12_p1_Popup {
         Assert.assertEquals(driver.findElement(By.cssSelector("div.sign-up-form>h2")).getText(), "Đăng ký tài khoản");
     }
 
-    @Test
-    public void TC_Ext_Shadow_DOM() {
-        // before close --> in DOM | after close --> not in DOM
-
-        driver.get("https://shopee.vn/");
-        sleepInSeconds(1); // set more sleep time to close popup || Debug --> no popup case
-
-        SearchContext shadowRoot = driver.findElement(By.cssSelector("shopee-banner-popup-stateful")).getShadowRoot();
-
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-        List<WebElement> popup = shadowRoot.findElements(By.cssSelector("div.home-popup__content")); // Selenium v4.14.1 not support By.xpath/ By.tagName
-        if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
-            shadowRoot.findElement(By.cssSelector("div.shopee-popup__close-btn")).click();
-            sleepInSeconds(1);
-        }
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-
-        driver.findElement(By.cssSelector("input.shopee-searchbar-input__input")).sendKeys("Iphone 15 Pro Max");
-        driver.findElement(By.cssSelector("button.shopee-searchbar__search-button")).click();
-        sleepInSeconds(2);
-    }
-
     @AfterClass
     public void afterClass() {
         driver.quit();
