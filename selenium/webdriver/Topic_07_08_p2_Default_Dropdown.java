@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Random;
 
-public class Exercise_07_08_p2_Default_Dropdown {
+public class Topic_07_08_p2_Default_Dropdown {
     WebDriver driver;
 
     @BeforeClass

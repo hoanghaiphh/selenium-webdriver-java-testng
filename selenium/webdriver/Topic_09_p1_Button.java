@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Exercise_09_p1_Button {
+public class Topic_09_p1_Button {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

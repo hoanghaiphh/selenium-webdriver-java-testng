@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_09_p2_Checkbox_RadioButton {
+public class Topic_09_p2_Checkbox_RadioButton {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Random;
 
-public class Exercise_07_08_p1_Textbox_TextArea {
+public class Topic_07_08_p1_Textbox_TextArea {
     WebDriver driver;
 
     @BeforeClass

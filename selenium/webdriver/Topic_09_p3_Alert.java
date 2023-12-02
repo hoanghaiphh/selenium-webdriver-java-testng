@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openqa.selenium.By;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class Exercise_09_p3_Alert {
+public class Topic_09_p3_Alert {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

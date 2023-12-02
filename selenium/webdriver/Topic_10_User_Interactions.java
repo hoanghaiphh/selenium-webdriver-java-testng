@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Exercise_10_User_Interactions {
+public class Topic_10_User_Interactions {
     WebDriver driver;
     Actions actions;
     Keys cmdCtrl = Platform.getCurrent().is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;

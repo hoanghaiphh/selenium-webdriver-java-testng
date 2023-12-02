@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Exercise_04_05_Xpath_Css {
+public class Topic_04_05_Xpath_Css {
     WebDriver driver;
 
     @BeforeClass

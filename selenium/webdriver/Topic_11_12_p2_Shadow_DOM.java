@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_11_12_p2_Shadow_DOM {
+public class Topic_11_12_p2_Shadow_DOM {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

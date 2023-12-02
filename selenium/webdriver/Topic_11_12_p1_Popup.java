@@ -1,7 +1,6 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,7 +13,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.List;
 
-public class Exercise_11_12_p1_Popup {
+public class Topic_11_12_p1_Popup {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

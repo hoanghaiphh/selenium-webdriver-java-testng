@@ -1,4 +1,4 @@
-package exercise;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Exercise_06_Browser_Element {
+public class Topic_06_Browser_Element {
     WebDriver driver;
 
     @BeforeClass
