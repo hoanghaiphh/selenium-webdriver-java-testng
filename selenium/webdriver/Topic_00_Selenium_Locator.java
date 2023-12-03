@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Topic_00_Locator {
+public class Topic_00_Selenium_Locator {
     WebDriver driver;
     String projectPath = System.getProperty("user.dir");
     String osName = System.getProperty("os.name");
@@ -32,7 +32,7 @@ public class Topic_00_Locator {
     }
 
     @Test
-    public void ytVid_11_Selenium_Locator() {
+    public void Vid_11_Selenium_Locator() {
         // 8 loại Locator
         // Selenium Locator = HTML Attribute
         // Id/ Class/ Name = Trùng vs 3 attribute của HTML
@@ -68,16 +68,21 @@ public class Topic_00_Locator {
         driver.findElement(By.cssSelector("input[id='FirstName']"));
         driver.findElement(By.cssSelector("input#FirstName"));
         driver.findElement(By.cssSelector("#FirstName"));
+
         // CSS vs Class
         driver.findElement(By.cssSelector("div[class='header-logo']"));
         driver.findElement(By.cssSelector("div.header-logo"));
         driver.findElement(By.cssSelector(".header-logo"));
+
         // CSS vs Name
         driver.findElement(By.cssSelector("input[name='FirstName']"));
+
         // CSS vs tagName
         driver.findElements(By.cssSelector("input"));
+
         // CSS vs LinkText
         driver.findElement(By.cssSelector("a[href='/customer/addresses']"));
+
         // CSS vs Partial Link Text
         driver.findElement(By.cssSelector("a[href*='addresses']"));
         // (ko su dung) driver.findElement(By.cssSelector("a[href^='addresses']"));
@@ -85,22 +90,27 @@ public class Topic_00_Locator {
 
         // xpath vs ID
         driver.findElement(By.xpath("//input[@id='LastName']"));
+
         // xpath vs Class
         driver.findElement(By.xpath("//div[@class='currency-selector']"));
+
         // xpath vs Name
         driver.findElement(By.xpath("//input[@name='Email']"));
+
         // xpath vs tagName
         driver.findElements(By.xpath("//span"));
+
         // xpath vs LinkText
         driver.findElement(By.xpath("//a[@href='/jewelry']"));
         driver.findElement(By.xpath("//a[text()='Jewelry ']"));
+
         // xpath vs Partial Link Text
         driver.findElement(By.xpath("//a[contains(@href,'viewedproducts')]"));
         driver.findElement(By.xpath("//a[contains(text(),'Recently vie')]"));
     }
 
     @Test
-    public void ytVid_12_Relative_Locator() {
+    public void Vid_12_Relative_Locator() {
         driver.get("https://demo.nopcommerce.com/login?returnUrl=%2Fregister");
 
         // Login button
@@ -136,7 +146,7 @@ public class Topic_00_Locator {
     }
 
     @Test
-    public void ytVid_14_Text() {
+    public void Vid_14_Selenium_Text() {
         driver.get("https://automationfc.github.io/basic-form/");
 
         // 1 - Truyen text vao locator de check hien thi (isDisplayed)

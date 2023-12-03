@@ -1,6 +1,6 @@
-package note;
+package java_basic;
 
-public class Vid_26_Parameter {
+public class JavaBasic_Parameter {
 
     static String fullNameGlobal = "First";
 
@@ -17,7 +17,7 @@ public class Vid_26_Parameter {
         System.out.println(getFullName()); // in ra fullNameGlobal từ hàm getFullName()
 
 
-        Vid_26_Parameter topic = new Vid_26_Parameter(); // khai báo biến object để sử dụng
+        JavaBasic_Parameter topic = new JavaBasic_Parameter(); // khai báo biến object để sử dụng
         topic.setFullName2("Third");
         System.out.println(topic.getFullName2());
 
@@ -29,10 +29,15 @@ public class Vid_26_Parameter {
     // hàm main phải chạy dưới dạng static
     // muốn gọi trực tiếp sang hàm khác trong cùng class cũng bắt buộc cũng phải là hàm static mới gọi đc
     // nếu không thì phải khai báo biến object
+
+
+
     public void setFullName2(String fullName2) {
         fullNameGlobal = fullName2;
     }
     public String getFullName2() {
         return fullNameGlobal;
     }
+
+
 }

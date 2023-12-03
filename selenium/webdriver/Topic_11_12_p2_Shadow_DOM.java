@@ -21,13 +21,6 @@ public class Topic_11_12_p2_Shadow_DOM {
         }
     }
 
-    public List<WebElement> reduceWaitFindElements(By by) {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-        List<WebElement> listResult = driver.findElements(by);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        return listResult;
-    }
-
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();

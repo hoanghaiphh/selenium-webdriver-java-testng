@@ -1,4 +1,4 @@
-package note;
+package webdriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +15,7 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.time.Duration;
 
-public class DragDrop_HTML5_Offset {
+public class Topic_10X_DragDrop_HTML5_Offset {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {
@@ -70,7 +70,7 @@ public class DragDrop_HTML5_Offset {
     // Mac: Firefox (PASSED) - Edge/Chrome (PASSED) - Safari (FAILED:...)
 
     @Test
-    public void TC_01_Run_on_Firefox() throws AWTException {
+    public void TC_01_Firefox() throws AWTException {
         driver = new FirefoxDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -92,7 +92,7 @@ public class DragDrop_HTML5_Offset {
     }
 
     @Test
-    public void TC_02_Run_on_Chrome() throws AWTException {
+    public void TC_02_Chrome() throws AWTException {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -114,7 +114,7 @@ public class DragDrop_HTML5_Offset {
     }
 
     @Test
-    public void TC_03_Run_on_Edge() throws AWTException {
+    public void TC_03_Edge() throws AWTException {
         driver = new EdgeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
@@ -136,7 +136,7 @@ public class DragDrop_HTML5_Offset {
     }
 
     @Test
-    public void TC_04_Run_on_Safari() throws AWTException {
+    public void TC_04_Safari() throws AWTException {
         if (System.getProperty("os.name").contains("Mac")) {
             driver = new SafariDriver();
             driver.manage().window().maximize();

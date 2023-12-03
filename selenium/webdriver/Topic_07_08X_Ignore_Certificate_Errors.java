@@ -1,4 +1,4 @@
-package note;
+package webdriver;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,7 +9,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.Test;
 
-public class Ignore_Certificate_Errors {
+public class Topic_07_08X_Ignore_Certificate_Errors {
     WebDriver driver;
     EdgeOptions edgeOptions;
 

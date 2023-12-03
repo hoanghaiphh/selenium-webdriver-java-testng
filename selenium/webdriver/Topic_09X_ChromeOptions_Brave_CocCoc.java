@@ -1,4 +1,4 @@
-package note;
+package webdriver;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openqa.selenium.By;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ChromeOptions_Brave_CocCoc {
+public class Topic_09X_ChromeOptions_Brave_CocCoc {
     WebDriver driver;
 
     @Test

@@ -1,54 +1,21 @@
-package note;
+package java_basic;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.*;
 
-public class Array_Collection {
+public class JavaBasic_DataType_Collection {
+    // COLLECTION: List - Set - Queue
 
-    // Array:
-    int[] age = {1, 2, 3, 4, 5, 6, 7}; String[] season = {"Spring", "Summer", "Autumn", "Winter"};
-    String[] month = new String[12];
-    @Test
-    public void Array() {
-        System.out.println(season.length);
-
-        System.out.println(season[0]); // giá trị đầu tiên
-        System.out.println(season[1]);
-        System.out.println(season[season.length-1]); // giá trị cuối cùng
-
-        for (String s : season) { // for each
-            System.out.println(s);
-        }
-        for (int i = 0; i < season.length; i++) { // for classic
-            System.out.println(season[i]);
-        }
-
-        Array_Collection topic = new Array_Collection();
-        for (int i = 0; i < topic.age.length; i++) {
-            System.out.println(topic.age[i]);
-        }
-        for (int s : topic.age) {
-            System.out.println(s);
-        }
-
-        // Convert Array -> ArrayList
-        List<String> seasonConvert = Arrays.asList(season);
-        Assert.assertTrue(seasonConvert.contains("Spring"));
-        Assert.assertTrue(Arrays.asList(season).contains("Summer"));
-        Assert.assertTrue(List.of(season).contains("Autumn"));
-    }
-
-
-    // Collection: List - Set - Queue
-    // List:
+    // LIST: --------------------------------------------------
     List<String> arrayList = new ArrayList<>(); // Truy xuất dữ liệu (query)
     List<String> linkedList = new LinkedList<>(); // Thêm/ Sửa/ Xóa
     List<String> vector = new Vector<>();
+
     @Test
-    public void List() {
-        List<String> studentName = new ArrayList<String>();
+    public void TC_01_List() {
+        List<String> studentName = new ArrayList<>();
 
         studentName.add("Nguyen Van A");
         studentName.add("Le Van B");
@@ -64,13 +31,15 @@ public class Array_Collection {
 
         // ArrayList có hàm contains:
         Assert.assertTrue(studentName.contains("Le Van B"));
+
     }
 
-    // Set:
+    // SET: --------------------------------------------------
     Set<String> hashSet = new HashSet<>();
     Set<String> treeSet = new TreeSet<>();
+
     @Test
-    public void Set() {
+    public void TC_02_Set() {
         Set<String> studentID = new TreeSet<>();
 
         studentID.add("Nguyen Van A");
@@ -84,13 +53,17 @@ public class Array_Collection {
         // Không lấy dữ liệu trong Set theo Index (không có .get(i)) --> Convert sang Array/List
         // Convert Set --> ArrayList:
         List<String> studentIDList = new ArrayList<>(studentID);
-        System.out.println(studentIDList.get(2)); // thứ tự ???
+        System.out.println(studentIDList.get(0));
+        System.out.println(studentIDList.get(3));
 
         // Convert Set --> Array:
         String[] studentIDArray = studentID.toArray(new String[0]);
-        System.out.println(studentIDArray[2]); // thứ tự ???
+        System.out.println(studentIDArray[studentIDArray.length-1]);
+        System.out.println(studentIDArray[3]);
 
         // Set có hàm contains:
         Assert.assertTrue(studentID.contains("Le Van B"));
+
     }
+
 }
