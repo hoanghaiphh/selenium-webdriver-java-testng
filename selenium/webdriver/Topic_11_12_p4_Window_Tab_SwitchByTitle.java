@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Set;
 
-public class Topic_11_12_p4_Window_Tab {
+public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {
@@ -31,9 +31,9 @@ public class Topic_11_12_p4_Window_Tab {
     }
 
     public void switchToWindowByTitle(String windowTitle) {
-        Set<String> allWindowIDs = driver.getWindowHandles();
-        for (String windowID : allWindowIDs) {
-            driver.switchTo().window(windowID);
+        Set<String> allWindowHandles = driver.getWindowHandles();
+        for (String windowHandle : allWindowHandles) {
+            driver.switchTo().window(windowHandle);
             if (driver.getTitle().equals(windowTitle)) {
                 break;
             }
@@ -41,9 +41,9 @@ public class Topic_11_12_p4_Window_Tab {
     }
 
     public void closeAllWindowsExceptTitle(String windowTitle) {
-        Set<String> allWindowIDs = driver.getWindowHandles();
-        for (String windowID : allWindowIDs) {
-            driver.switchTo().window(windowID);
+        Set<String> allWindowHandles = driver.getWindowHandles();
+        for (String windowHandle : allWindowHandles) {
+            driver.switchTo().window(windowHandle);
             if (!driver.getTitle().equals(windowTitle)) {
                 driver.close();
             }
@@ -113,7 +113,7 @@ public class Topic_11_12_p4_Window_Tab {
 
         // Facebook
         driver.findElement(By.cssSelector("div.hotline img[alt='facebook']")).click();
-        sleepInSeconds(3);
+        sleepInSeconds(5);
 
         switchToWindowByTitle("Kyna.vn | Ho Chi Minh City | Facebook");
         sleepInSeconds(2);
@@ -125,7 +125,7 @@ public class Topic_11_12_p4_Window_Tab {
         switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
 
         driver.findElement(By.cssSelector("div.hotline img[alt='youtube']")).click();
-        sleepInSeconds(3);
+        sleepInSeconds(5);
 
         switchToWindowByTitle("Kyna.vn - YouTube");
         sleepInSeconds(2);
@@ -147,7 +147,6 @@ public class Topic_11_12_p4_Window_Tab {
         driver.get("http://live.techpanda.org/");
 
         driver.findElement(By.xpath("//a[text()='Mobile']")).click();
-        sleepInSeconds(1);
 
         driver.findElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']")).click();
         sleepInSeconds(1);
@@ -173,7 +172,6 @@ public class Topic_11_12_p4_Window_Tab {
 
         closeAllWindowsExceptTitle("Mobile");
         switchToWindowByTitle("Mobile");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/mobile.html");
         Assert.assertEquals(driver.getTitle(), "Mobile");
@@ -190,10 +188,9 @@ public class Topic_11_12_p4_Window_Tab {
         driver.get("https://dictionary.cambridge.org/vi/");
 
         jsClick(driver.findElement(By.cssSelector("span.cdo-login-button span")));
-        sleepInSeconds(3);
+        sleepInSeconds(5);
 
         switchToWindowByTitle("Login");
-        sleepInSeconds(2);
 
         driver.findElement(By.cssSelector("input[value='Log in']")).click();
         sleepInSeconds(1);
@@ -203,7 +200,6 @@ public class Topic_11_12_p4_Window_Tab {
 
         closeAllWindowsExceptTitle("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
         switchToWindowByTitle("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
-        sleepInSeconds(1);
 
         driver.findElement(By.cssSelector("input#searchword")).sendKeys("automation");
         jsClick(driver.findElement(By.cssSelector("button.cdo-search-button")));
@@ -217,16 +213,14 @@ public class Topic_11_12_p4_Window_Tab {
         driver.get("https://courses.dce.harvard.edu/");
 
         driver.findElement(By.cssSelector("div.banner__auth")).click();
-        sleepInSeconds(1);
 
         jsClick(driver.findElement(By.cssSelector("button.sam-wait__close")));
-        sleepInSeconds(3);
+        sleepInSeconds(5);
 
         switchToWindowByTitle("Harvard DCE Login Portal");
-        sleepInSeconds(3);
+        driver.manage().window().maximize();
 
-        driver.findElement(By.xpath("//div[text()='Log in with HarvardKey']")).click();
-        sleepInSeconds(3);
+        jsClick(driver.findElement(By.xpath("//div[text()='Log in with HarvardKey']")));
 
         driver.findElement(By.cssSelector("button.mdc-button--raised")).click();
         sleepInSeconds(1);
@@ -235,7 +229,6 @@ public class Topic_11_12_p4_Window_Tab {
 
         closeAllWindowsExceptTitle("DCE Course Search");
         switchToWindowByTitle("DCE Course Search");
-        sleepInSeconds(1);
 
         driver.findElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
         driver.findElement(By.cssSelector("button#search-button")).click();
