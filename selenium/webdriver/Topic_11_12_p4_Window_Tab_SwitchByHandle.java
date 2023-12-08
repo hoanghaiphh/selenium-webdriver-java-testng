@@ -20,7 +20,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     WebDriver driver;
     WebDriverWait explicitWait;
 
-    public WebElement waitFindElementBy(By locator) {
+    public WebElement waitVisibilityOfElement(By locator) {
         return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
@@ -62,7 +62,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         String parentWindowHandle = driver.getWindowHandle();
 
         // Google
-        clickAndSwitch(waitFindElementBy(By.xpath("//a[text()='GOOGLE']")));
+        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='GOOGLE']")));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.google.com.vn/");
         Assert.assertEquals(driver.getTitle(), "Google");
@@ -70,7 +70,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         // Facebook
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitFindElementBy(By.xpath("//a[text()='FACEBOOK']")));
+        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='FACEBOOK']")));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/");
         Assert.assertEquals(driver.getTitle(), "Facebook – log in or sign up");
@@ -78,7 +78,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         // Tiki
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitFindElementBy(By.xpath("//a[text()='TIKI']")));
+        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='TIKI']")));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://tiki.vn/");
         Assert.assertEquals(driver.getTitle(), "Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh");
@@ -98,7 +98,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
         // Facebook
-        clickAndSwitch(waitFindElementBy(By.cssSelector("div.hotline img[alt='facebook']")));
+        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("div.hotline img[alt='facebook']")));
 
         explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("form#login_popup_cta_form")));
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/kyna.vn");
@@ -107,7 +107,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         // Youtube
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitFindElementBy(By.cssSelector("div.hotline img[alt='youtube']")));
+        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("div.hotline img[alt='youtube']")));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.youtube.com/user/kynavn");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn - YouTube");
@@ -124,30 +124,30 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         driver.get("http://live.techpanda.org/");
         String parentWindowHandle = driver.getWindowHandle();
 
-        waitFindElementBy(By.xpath("//a[text()='Mobile']")).click();
+        waitVisibilityOfElement(By.xpath("//a[text()='Mobile']")).click();
 
-        waitFindElementBy(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']")).click();
+        waitVisibilityOfElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']")).click();
 
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
-        Assert.assertTrue(waitFindElementBy(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
+        Assert.assertTrue(waitVisibilityOfElement(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
 
-        waitFindElementBy(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']")).click();
+        waitVisibilityOfElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']")).click();
 
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
-        Assert.assertTrue(waitFindElementBy(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
+        Assert.assertTrue(waitVisibilityOfElement(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
 
-        clickAndSwitch(waitFindElementBy(By.cssSelector("button[title='Compare']")));
+        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("button[title='Compare']")));
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/catalog/product_compare/index/");
         Assert.assertEquals(driver.getTitle(), "Products Comparison List - Magento Commerce");
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
 
         closeAllAndSwitch(parentWindowHandle);
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/mobile.html");
         Assert.assertEquals(driver.getTitle(), "Mobile");
 
-        waitFindElementBy(By.xpath("//a[text()='Clear All']")).click();
+        waitVisibilityOfElement(By.xpath("//a[text()='Clear All']")).click();
 
         explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
 
@@ -165,19 +165,19 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
             driver.findElement(By.xpath("//button[contains(@class, 'closeModalBtn')]")).click();
         }
 
-        clickAndSwitch(waitFindElementBy(By.cssSelector("span.cdo-login-button span")));
+        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("span.cdo-login-button span")));
 
-        waitFindElementBy(By.cssSelector("input[value='Log in']")).click();
+        waitVisibilityOfElement(By.cssSelector("input[value='Log in']")).click();
 
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
 
         closeAllAndSwitch(parentWindowHandle);
 
-        waitFindElementBy(By.cssSelector("input#searchword")).sendKeys("automation");
-        waitFindElementBy(By.cssSelector("button.cdo-search-button")).click();
+        waitVisibilityOfElement(By.cssSelector("input#searchword")).sendKeys("automation");
+        waitVisibilityOfElement(By.cssSelector("button.cdo-search-button")).click();
 
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
     }
 
     @Test
@@ -185,9 +185,9 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         driver.get("https://courses.dce.harvard.edu/");
         String parentWindowHandle = driver.getWindowHandle();
 
-        waitFindElementBy(By.cssSelector("div.banner__auth")).click();
+        waitVisibilityOfElement(By.cssSelector("div.banner__auth")).click();
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", waitFindElementBy(By.cssSelector("button.sam-wait__close")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", waitVisibilityOfElement(By.cssSelector("button.sam-wait__close")));
 
         explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#sam-wait")));
         Set<String> allWindowHandles = driver.getWindowHandles();
@@ -198,16 +198,16 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
             }
         }
 
-        waitFindElementBy(By.xpath("//div[text()='Log in with HarvardKey']")).click();
+        waitVisibilityOfElement(By.xpath("//div[text()='Log in with HarvardKey']")).click();
 
-        waitFindElementBy(By.cssSelector("button.mdc-button--raised")).click();
+        waitVisibilityOfElement(By.cssSelector("button.mdc-button--raised")).click();
 
-        Assert.assertEquals(waitFindElementBy(By.cssSelector("div.login-status-message")).getText(), "Password is a required field. Username is a required field.");
+        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.login-status-message")).getText(), "Password is a required field. Username is a required field.");
 
         closeAllAndSwitch(parentWindowHandle);
 
-        waitFindElementBy(By.cssSelector("input#crit-keyword")).sendKeys("law");
-        waitFindElementBy(By.cssSelector("button#search-button")).click();
+        waitVisibilityOfElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
+        waitVisibilityOfElement(By.cssSelector("button#search-button")).click();
 
         explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector("div.panel--kind-results h2"))));
         Assert.assertEquals(driver.findElement(By.cssSelector("div.panel--kind-results h2")).getText(), "Search Results");
