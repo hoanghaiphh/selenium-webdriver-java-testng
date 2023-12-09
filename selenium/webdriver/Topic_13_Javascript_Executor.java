@@ -19,32 +19,62 @@ public class Topic_13_Javascript_Executor {
     WebDriverWait explicitWait;
     JavascriptExecutor jsExecutor;
 
+    public void sleepInMilliSeconds(long timeInMilliSecond) {
+        try {
+            Thread.sleep(timeInMilliSecond);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public WebElement waitPresenceOfElement(By locator) {
         return explicitWait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
-    public void clickByJsExecutor(By locator) {
-        WebElement webElement = waitPresenceOfElement(locator);
-        jsExecutor.executeScript("arguments[0].click()", webElement);
-    }
-    public void sendKeysByJsExecutor(By locator, String keysToSend) {
-        WebElement webElement = waitPresenceOfElement(locator);
-        jsExecutor.executeScript("arguments[0].setAttribute('value', '')", webElement);
-        jsExecutor.executeScript("arguments[0].setAttribute('value', '" + keysToSend + "')", webElement);
-    }
-    public void assertInnerTextByJsExecutor(By locator, String expectedText) {
-        WebElement webElement = waitPresenceOfElement(locator);
-        String actualText = (String) jsExecutor.executeScript("return arguments[0].innerText", webElement);
-        Assert.assertEquals(actualText, expectedText);
-    }
-    public void assertValidationMsgByJsExecutor(By locator, String expectedMsg) {
-        WebElement webElement = waitPresenceOfElement(locator);
-        String actualMsg = (String) jsExecutor.executeScript("return arguments[0].validationMessage", webElement);
-        Assert.assertEquals(actualMsg, expectedMsg);
-    }
+
     public void navigateByJsExecutor(String pageUrl) {
         jsExecutor.executeScript("window.location = " + "'" + pageUrl + "'");
         explicitWait.until(ExpectedConditions.urlToBe(pageUrl));
         explicitWait.until(driver -> jsExecutor.executeScript("return document.readyState").equals("complete"));
+    }
+
+    public void highlightElement(WebElement webElement) {
+        String originalStyle = webElement.getAttribute("style");
+        jsExecutor.executeScript("arguments[0].setAttribute('style', arguments[1])", webElement, "border: 2px solid red; border-style: dashed;");
+        sleepInMilliSeconds(500);
+        jsExecutor.executeScript("arguments[0].setAttribute('style', arguments[1])", webElement, originalStyle);
+    }
+
+    public void clickByJsExecutor(By locator) {
+        WebElement webElement = waitPresenceOfElement(locator);
+        highlightElement(webElement);
+        jsExecutor.executeScript("arguments[0].click()", webElement);
+    }
+
+    public void sendKeysByJsExecutor(By locator, String keysToSend) {
+        WebElement webElement = waitPresenceOfElement(locator);
+        highlightElement(webElement);
+        jsExecutor.executeScript("arguments[0].setAttribute('value', '')", webElement);
+        jsExecutor.executeScript("arguments[0].setAttribute('value', '" + keysToSend + "')", webElement);
+    }
+
+    public void assertInnerTextByJsExecutor(By locator, String expectedText) {
+        WebElement webElement = waitPresenceOfElement(locator);
+        highlightElement(webElement);
+        String actualText = (String) jsExecutor.executeScript("return arguments[0].innerText", webElement);
+        Assert.assertEquals(actualText, expectedText);
+    }
+
+    public void assertValidationMsgByJsExecutor(By locator, String expectedMsg) {
+        WebElement webElement = waitPresenceOfElement(locator);
+        highlightElement(webElement);
+        String actualMsg = (String) jsExecutor.executeScript("return arguments[0].validationMessage", webElement);
+        Assert.assertEquals(actualMsg, expectedMsg);
+    }
+
+    public boolean isImageLoaded(By locator) {
+        WebElement webElement = waitPresenceOfElement(locator);
+        highlightElement(webElement);
+        return (boolean) jsExecutor.executeScript("return arguments[0].complete && typeof arguments[0].naturalWidth != 'undefined' && arguments[0].naturalWidth > 0", webElement);
     }
 
     @BeforeClass
@@ -186,7 +216,6 @@ public class Topic_13_Javascript_Executor {
         sendKeysByJsExecutor(By.cssSelector("input#email"), "automation@gmail.com");
         clickByJsExecutor(By.cssSelector("button[type='submit']"));
         assertValidationMsgByJsExecutor(By.cssSelector("input#password"), "Please fill out this field.");
-
     }
 
     @Test
@@ -263,6 +292,19 @@ public class Topic_13_Javascript_Executor {
 
         String pageUrl = (String) jsExecutor.executeScript("return document.URL");
         Assert.assertEquals(pageUrl, "http://live.techpanda.org/index.php/");
+    }
+
+    @Test
+    public void TC_06_Broken_Image() {
+        navigateByJsExecutor("https://automationfc.github.io/basic-form/index.html");
+
+        jsExecutor.executeScript("arguments[0].scrollIntoView(false); window.scrollBy(0,400);", waitPresenceOfElement(By.cssSelector("img[alt='broken_01']")));
+
+        Assert.assertFalse(isImageLoaded(By.cssSelector("img[alt='broken_01']")));
+        Assert.assertFalse(isImageLoaded(By.cssSelector("img[alt='broken_02']")));
+        Assert.assertFalse(isImageLoaded(By.cssSelector("img[alt='broken_03']")));
+        Assert.assertFalse(isImageLoaded(By.cssSelector("img[alt='broken_04']")));
+        Assert.assertTrue(isImageLoaded(By.cssSelector("img[alt='broken_05']")));
     }
 
     @AfterClass
