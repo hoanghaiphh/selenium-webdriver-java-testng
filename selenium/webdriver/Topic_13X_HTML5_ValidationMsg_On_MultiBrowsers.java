@@ -158,18 +158,19 @@ public class Topic_13X_HTML5_ValidationMsg_On_MultiBrowsers {
             navigateByJsExecutor("https://warranty.rode.com/login");
 
             clickByJsExecutor(By.cssSelector("button[type='submit']"));
-            String emailValidationMsg = (String) jsExecutor.executeScript("return arguments[0].validationMessage", waitPresenceOfElement(By.cssSelector("input#email")));
-            System.out.println("Email = NULL --> Msg: " + emailValidationMsg);
+            assertValidationMsgByJsExecutor(By.cssSelector("input#email"), "Fill out this field");
 
             sendKeysByJsExecutor(By.cssSelector("input#email"), "automation");
             clickByJsExecutor(By.cssSelector("button[type='submit']"));
-            emailValidationMsg = (String) jsExecutor.executeScript("return arguments[0].validationMessage", waitPresenceOfElement(By.cssSelector("input#email")));
-            System.out.println("Email = 'automation' --> Msg: " + emailValidationMsg);
+            assertValidationMsgByJsExecutor(By.cssSelector("input#email"), "Enter an email address");
 
             sendKeysByJsExecutor(By.cssSelector("input#email"), "automation@#!");
             clickByJsExecutor(By.cssSelector("button[type='submit']"));
-            emailValidationMsg = (String) jsExecutor.executeScript("return arguments[0].validationMessage", waitPresenceOfElement(By.cssSelector("input#email")));
-            System.out.println("Email = 'automation@#!' --> Msg: " + emailValidationMsg);
+            assertValidationMsgByJsExecutor(By.cssSelector("input#email"), "Enter an email address");
+
+            sendKeysByJsExecutor(By.cssSelector("input#email"), "automation@gmail.com");
+            clickByJsExecutor(By.cssSelector("button[type='submit']"));
+            assertValidationMsgByJsExecutor(By.cssSelector("input#password"), "Fill out this field");
 
             driver.quit();
         } else {
