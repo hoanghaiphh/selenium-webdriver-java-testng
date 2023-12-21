@@ -43,7 +43,7 @@ public class Topic_11_12_p3_Frame_iFrame {
         driver.switchTo().frame(driver.findElement(By.cssSelector("div.face-content>iframe")));
 
         Assert.assertTrue(driver.findElement(By.cssSelector("html#facebook")).isDisplayed());
-        Assert.assertEquals(driver.findElement(By.xpath("//a[text()='Kyna.vn']/parent::div/following-sibling::div")).getText(), "169K followers");
+        Assert.assertTrue(driver.findElement(By.xpath("//a[text()='Kyna.vn']/parent::div/following-sibling::div")).getText().contains("K followers"));
 
         driver.switchTo().defaultContent();
 

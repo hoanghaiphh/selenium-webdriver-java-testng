@@ -128,7 +128,9 @@ public class Topic_11_12_p1_Popup {
         // this case: before popup appeared --> not in DOM | after popup appeared --> in DOM | after close popup --> in DOM
         // popup NOT appeared immediately after page load
 
-        driver.get("https://www.javacodegeeks.com/");
+        // driver.get("https://www.javacodegeeks.com/");
+        ((JavascriptExecutor) driver).executeScript("window.location = 'https://www.javacodegeeks.com/'");
+        sleepInSeconds(10);
 
         List<WebElement> popup = reduceWaitFindElements(By.cssSelector("div.lepopup-element-rectangle.lepopup-animated"));
         if (!popup.isEmpty() && popup.get(0).isDisplayed()) {

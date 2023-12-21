@@ -20,6 +20,14 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     WebDriver driver;
     WebDriverWait explicitWait;
 
+    public void sleepInSeconds (long timeInSecond) {
+        try {
+            Thread.sleep(timeInSecond*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public WebElement waitVisibilityOfElement(By locator) {
         return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
@@ -157,7 +165,9 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
 
     @Test
     public void TC_16_Window_Tab() { // there is a not-in-DOM popup displayed randomly
-        driver.get("https://dictionary.cambridge.org/vi/");
+        // driver.get("https://dictionary.cambridge.org/vi/");
+        ((JavascriptExecutor) driver).executeScript("window.location = 'https://dictionary.cambridge.org/vi/'");
+        sleepInSeconds(10);
         String parentWindowHandle = driver.getWindowHandle();
 
         List<WebElement> popup = driver.findElements(By.xpath("//div[contains(@class, 'surveyContainer')]"));
