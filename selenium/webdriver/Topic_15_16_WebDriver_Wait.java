@@ -31,7 +31,6 @@ public class Topic_15_16_WebDriver_Wait {
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
@@ -39,11 +38,14 @@ public class Topic_15_16_WebDriver_Wait {
     @Test
     public void TC_02_Implicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
         driver.findElement(By.cssSelector("div#start>button")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
-        // set implicitWait = 2s --> failed
+        // set implicitWait < 5s --> failed
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
     }
 
     @Test
@@ -61,7 +63,6 @@ public class Topic_15_16_WebDriver_Wait {
     @Test
     public void TC_04_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
 
         driver.findElement(By.cssSelector("div#start>button")).click();
 
@@ -71,14 +72,11 @@ public class Topic_15_16_WebDriver_Wait {
         // set implicitWait = 3s --> failed
         // set implicitWait = 5s --> passed
         // set implicitWait = 15s --> passed
-
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
     @Test
     public void TC_05_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
 
         driver.findElement(By.cssSelector("div#start>button")).click();
 
@@ -87,8 +85,6 @@ public class Topic_15_16_WebDriver_Wait {
         // set implicitWait = 3s --> failed
         // set implicitWait = 5s --> passed
         // set implicitWait = 15s --> passed
-
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
     @Test
@@ -166,7 +162,8 @@ public class Topic_15_16_WebDriver_Wait {
         driver.findElement(By.cssSelector("section.widget_search input.search-field")).sendKeys("Selenium");
         driver.findElement(By.cssSelector("section.widget_search span.glass")).click();
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("h2.page-title")).getText(), "Search Results for: \"Selenium\":");
+        Assert.assertEquals(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("h2.page-title"))).getText(), "Search Results for: \"Selenium\":");
 
         List<WebElement> searchResults = driver.findElements(By.cssSelector("h3.post-title>a"));
         for (int i = 0; i < searchResults.size(); i++) {
