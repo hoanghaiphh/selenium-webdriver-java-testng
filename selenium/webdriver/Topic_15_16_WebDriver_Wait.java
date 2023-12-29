@@ -69,9 +69,6 @@ public class Topic_15_16_WebDriver_Wait {
         explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#loading>img")));
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
-        // set implicitWait = 3s --> failed
-        // set implicitWait = 5s --> passed
-        // set implicitWait = 15s --> passed
     }
 
     @Test
@@ -82,9 +79,6 @@ public class Topic_15_16_WebDriver_Wait {
 
         Assert.assertEquals(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector("div#finish>h4"))).getText(), "Hello World!");
-        // set implicitWait = 3s --> failed
-        // set implicitWait = 5s --> passed
-        // set implicitWait = 15s --> passed
     }
 
     @Test
