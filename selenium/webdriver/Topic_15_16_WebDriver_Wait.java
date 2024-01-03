@@ -32,18 +32,19 @@ public class Topic_15_16_WebDriver_Wait {
     public void beforeClass() {
         driver = new FirefoxDriver();
         driver.manage().window().maximize();
-        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30), Duration.ofMillis(250));
     }
 
     @Test
     public void TC_02_Implicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        // set implicitWait < 5s --> fail
 
         driver.findElement(By.cssSelector("div#start>button")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
-        // set implicitWait < 5s --> failed
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
     }
@@ -55,6 +56,7 @@ public class Topic_15_16_WebDriver_Wait {
         driver.findElement(By.cssSelector("div#start>button")).click();
 
         sleepInSeconds(5);
+        // set sleep < 5s --> fail
 
         Assert.assertTrue(driver.findElement(By.cssSelector("div#finish>h4")).isDisplayed());
         Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
@@ -64,7 +66,8 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_04_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
 
-        driver.findElement(By.cssSelector("div#start>button")).click();
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#start>button")))
+                .click();
 
         explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#loading>img")));
 
@@ -75,10 +78,12 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_05_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
 
-        driver.findElement(By.cssSelector("div#start>button")).click();
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#start>button")))
+                .click();
 
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("div#finish>h4"))).getText(), "Hello World!");
+        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#finish>h4")));
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
     }
 
     @Test
@@ -87,15 +92,21 @@ public class Topic_15_16_WebDriver_Wait {
 
         explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.rcMainTable>tbody")));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.datesContainer span")).getText(), "No Selected Dates to display.");
+        Assert.assertEquals(
+                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.datesContainer span")))
+                        .getText(), "No Selected Dates to display.");
 
-        driver.findElement(By.xpath("//a[text()='20']")).click();
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='20']")))
+                .click();
 
         explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div:not([style='display:none;'])>div.raDiv")));
 
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@class,'rcSelected')]//a[text()='20']")));
+        // attribute class will be: class="rcSelected rcHover" --> USE: contains(@class, 'rcSelected') / NOT USE: @class='rcSelected'
+        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(@class,'rcSelected')]/a[text()='20']")));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.datesContainer span")).getText(), "Wednesday, December 20, 2023");
+        Assert.assertEquals(
+                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.datesContainer span")))
+                        .getText(), "Saturday, January 20, 2024");
     }
 
     @Test
@@ -109,23 +120,29 @@ public class Topic_15_16_WebDriver_Wait {
             allFilePath = allFilePath + "\n" + (fileDir + filesToUpload[i]);
         }
 
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//button[text()='Upload Files']"))).click();
+        // wait for ajax loading invisible OR wait for element of next step visible...
 
-        explicitWait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("input#filesUploadInput"))).sendKeys(allFilePath);
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Upload Files']")))
+                .click();
 
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("div.mainUploadSuccess div.alert"))).getText(), "Your files have been successfully uploaded");
+        explicitWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#filesUploadInput")))
+                .sendKeys(allFilePath);
 
-        driver.findElement(By.cssSelector("div.mainUploadSuccessLink a")).click();
+        Assert.assertEquals(
+                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.mainUploadSuccess div.alert")))
+                        .getText(), "Your files have been successfully uploaded");
+
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.mainUploadSuccessLink a")))
+                .click();
 
         for (String fileName : filesToUpload) {
-            Assert.assertTrue(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/a/button/span[text()='Download']"))).isDisplayed());
+            Assert.assertTrue(
+                    explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/a/button/span[text()='Download']")))
+                            .isDisplayed());
             if (fileName.contains(".jpg") || fileName.contains(".png") || fileName.contains(".ico")) {
-                Assert.assertTrue(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/button/span[text()='Play']"))).isDisplayed());
+                Assert.assertTrue(
+                        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/button/span[text()='Play']")))
+                                .isDisplayed());
             }
         }
     }
@@ -156,8 +173,9 @@ public class Topic_15_16_WebDriver_Wait {
         driver.findElement(By.cssSelector("section.widget_search input.search-field")).sendKeys("Selenium");
         driver.findElement(By.cssSelector("section.widget_search span.glass")).click();
 
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("h2.page-title"))).getText(), "Search Results for: \"Selenium\":");
+        Assert.assertEquals(
+                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h2.page-title")))
+                        .getText(), "Search Results for: \"Selenium\":");
 
         List<WebElement> searchResults = driver.findElements(By.cssSelector("h3.post-title>a"));
         for (int i = 0; i < searchResults.size(); i++) {
