@@ -178,8 +178,8 @@ public class Topic_15_16_WebDriver_Wait {
                         .getText(), "Search Results for: \"Selenium\":");
 
         List<WebElement> searchResults = driver.findElements(By.cssSelector("h3.post-title>a"));
-        for (int i = 0; i < searchResults.size(); i++) {
-            Assert.assertTrue(searchResults.get(i).getText().contains("Selenium"));
+        for (WebElement searchResult : searchResults) {
+            Assert.assertTrue(searchResult.getText().contains("Selenium"));
         }
     }
 

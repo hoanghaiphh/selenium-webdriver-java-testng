@@ -40,4 +40,5 @@ public class JavaBasic_Parameter {
     }
 
 
+    // R-Click >> Generate >> Getter Setter...
 }
