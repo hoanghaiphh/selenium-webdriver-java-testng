@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-public class JavaBasic_DataType_Array {
+public class Java_Array {
     int[] age = {1, 2, 3, 4, 5, 6, 7};  String[] season = {"Spring", "Summer", "Autumn", "Winter"};
     String[] month = new String[12];
 
@@ -26,7 +26,7 @@ public class JavaBasic_DataType_Array {
             System.out.println(season[i]);
         }
 
-        JavaBasic_DataType_Array topic = new JavaBasic_DataType_Array();
+        Java_Array topic = new Java_Array();
 
         for (int i = 0; i < topic.age.length; i++) {
             System.out.println(topic.age[i]);

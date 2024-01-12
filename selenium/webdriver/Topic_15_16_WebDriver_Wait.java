@@ -28,11 +28,24 @@ public class Topic_15_16_WebDriver_Wait {
         }
     }
 
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void waitForInvisibility(By locator) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+    }
+
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
         driver.manage().window().maximize();
-        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30), Duration.ofMillis(250));
     }
 
     @Test
@@ -66,10 +79,11 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_04_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
 
-        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#start>button")))
-                .click();
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#loading>img")));
+        clickOnElement(By.cssSelector("div#start>button"));
+
+        waitForInvisibility(By.cssSelector("div#loading>img"));
 
         Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
     }
@@ -78,40 +92,40 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_05_Explicit_Wait() {
         driver.get("https://automationfc.github.io/dynamic-loading/");
 
-        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#start>button")))
-                .click();
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#finish>h4")));
+        clickOnElement(By.cssSelector("div#start>button"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div#finish>h4")).getText(), "Hello World!");
     }
 
     @Test
     public void TC_06_Explicit_Wait() {
         driver.get("https://demos.telerik.com/aspnet-ajax/ajaxloadingpanel/functionality/explicit-show-hide/defaultcs.aspx");
 
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.rcMainTable>tbody")));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-        Assert.assertEquals(
-                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.datesContainer span")))
-                        .getText(), "No Selected Dates to display.");
+        findVisibleElement(By.cssSelector("table.rcMainTable>tbody"));
 
-        explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='20']")))
-                .click();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.datesContainer span")).getText(), "No Selected Dates to display.");
 
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div:not([style='display:none;'])>div.raDiv")));
+        clickOnElement(By.xpath("//a[text()='20']"));
+
+        waitForInvisibility(By.cssSelector("div:not([style='display:none;'])>div.raDiv"));
 
         // attribute class will be: class="rcSelected rcHover" --> USE: contains(@class, 'rcSelected') / NOT USE: @class='rcSelected'
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(@class,'rcSelected')]/a[text()='20']")));
+        findVisibleElement(By.xpath("//td[contains(@class,'rcSelected')]/a[text()='20']"));
 
-        Assert.assertEquals(
-                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.datesContainer span")))
-                        .getText(), "Saturday, January 20, 2024");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.datesContainer span")).getText(), "Saturday, January 20, 2024");
     }
 
     @Test
     public void TC_07_Explicit_Wait() {
         driver.get("https://gofile.io/?t=uploadFiles");
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         String fileDir = System.getProperty("user.dir") + File.separator + "uploadFiles" + File.separator;
         String[] filesToUpload = new String[]{"avatar.jpg", "jQuery.txt", "topic13.png", "santa.ico", "snow.png", "large.jpg"};
@@ -122,27 +136,18 @@ public class Topic_15_16_WebDriver_Wait {
 
         // wait for ajax loading invisible OR wait for element of next step visible...
 
-        explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Upload Files']")))
-                .click();
+        clickOnElement(By.xpath("//button[text()='Upload Files']"));
 
-        explicitWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#filesUploadInput")))
-                .sendKeys(allFilePath);
+        driver.findElement(By.cssSelector("input#filesUploadInput")).sendKeys(allFilePath);
 
-        Assert.assertEquals(
-                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.mainUploadSuccess div.alert")))
-                        .getText(), "Your files have been successfully uploaded");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.mainUploadSuccess div.alert")).getText(), "Your files have been successfully uploaded");
 
-        explicitWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.mainUploadSuccessLink a")))
-                .click();
+        clickOnElement(By.cssSelector("div.mainUploadSuccessLink a"));
 
         for (String fileName : filesToUpload) {
-            Assert.assertTrue(
-                    explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/a/button/span[text()='Download']")))
-                            .isDisplayed());
+            Assert.assertTrue(findVisibleElement(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/a/button/span[text()='Download']")).isDisplayed());
             if (fileName.contains(".jpg") || fileName.contains(".png") || fileName.contains(".ico")) {
-                Assert.assertTrue(
-                        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/button/span[text()='Play']")))
-                                .isDisplayed());
+                Assert.assertTrue(findVisibleElement(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/button/span[text()='Play']")).isDisplayed());
             }
         }
     }
@@ -151,15 +156,18 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_10_Page_Ready() {
         driver.get("https://admin-demo.nopcommerce.com");
 
-        driver.findElement(By.cssSelector("input#Email")).clear();
-        driver.findElement(By.cssSelector("input#Email")).sendKeys("admin@yourstore.com");
-        driver.findElement(By.cssSelector("input#Password")).clear();
-        driver.findElement(By.cssSelector("input#Password")).sendKeys("admin");
-        driver.findElement(By.cssSelector("button.login-button")).click();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#ajaxBusy")));
+        findVisibleElement(By.cssSelector("input#Email")).clear();
+        findVisibleElement(By.cssSelector("input#Email")).sendKeys("admin@yourstore.com");
+        findVisibleElement(By.cssSelector("input#Password")).clear();
+        findVisibleElement(By.cssSelector("input#Password")).sendKeys("admin");
+        clickOnElement(By.cssSelector("button.login-button"));
 
-        driver.findElement(By.xpath("//a[text()='Logout']")).click();
+        waitForInvisibility(By.cssSelector("div#ajaxBusy"));
+
+        clickOnElement(By.xpath("//a[text()='Logout']"));
 
         explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
 
@@ -170,14 +178,15 @@ public class Topic_15_16_WebDriver_Wait {
     public void TC_11_Page_Ready() {
         driver.get("https://blog.testproject.io/");
 
-        driver.findElement(By.cssSelector("section.widget_search input.search-field")).sendKeys("Selenium");
-        driver.findElement(By.cssSelector("section.widget_search span.glass")).click();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-        Assert.assertEquals(
-                explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h2.page-title")))
-                        .getText(), "Search Results for: \"Selenium\":");
+        findVisibleElement(By.cssSelector("section.widget_search input.search-field")).sendKeys("Selenium");
+        clickOnElement(By.cssSelector("section.widget_search span.glass"));
 
-        List<WebElement> searchResults = driver.findElements(By.cssSelector("h3.post-title>a"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("h2.page-title")).getText(), "Search Results for: \"Selenium\":");
+
+        List<WebElement> searchResults = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("h3.post-title>a")));
         for (WebElement searchResult : searchResults) {
             Assert.assertTrue(searchResult.getText().contains("Selenium"));
         }

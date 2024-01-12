@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Date;
 
-public class JavaBasic_Surround_TryCatch {
+public class Java_Surround_TryCatch {
     WebDriver driver;
     WebDriverWait explicitWait;
 

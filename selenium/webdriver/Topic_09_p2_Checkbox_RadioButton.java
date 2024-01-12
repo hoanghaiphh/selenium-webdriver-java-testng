@@ -5,6 +5,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -15,110 +17,136 @@ import java.util.List;
 
 public class Topic_09_p2_Checkbox_RadioButton {
     WebDriver driver;
+    WebDriverWait explicitWait;
 
-    public void sleepInSeconds (long timeInSecond) {
-        try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void selectOrDeselectCheckbox(By checkboxLocator, Boolean expectedStatus) {
+        if (findVisibleElement(checkboxLocator).isSelected() != expectedStatus) {
+            clickOnElement(checkboxLocator);
+            explicitWait.until(ExpectedConditions.elementSelectionStateToBe(checkboxLocator, expectedStatus));
+        }
+    }
+
+    public void selectRadioBtn(By radioLocator) {
+        if (!findVisibleElement(radioLocator).isSelected()) {
+            clickOnElement(radioLocator);
+            explicitWait.until(ExpectedConditions.elementToBeSelected(radioLocator));
+        }
+    }
+
+    public void selectOrDeselectCheckboxAngular(By checkboxLocator, Boolean expectedStatus) {
+        if (driver.findElement(checkboxLocator).isSelected() != expectedStatus) {
+            driver.findElement(checkboxLocator).click();
+            explicitWait.until(ExpectedConditions.elementSelectionStateToBe(checkboxLocator, expectedStatus));
+        }
+    }
+
+    public void selectRadioBtnAngular(By radioLocator) {
+        if (!driver.findElement(radioLocator).isSelected()) {
+            driver.findElement(radioLocator).click();
+            explicitWait.until(ExpectedConditions.elementToBeSelected(radioLocator));
         }
     }
 
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
-    }
-
-    public void checkboxSelect(String checkboxLocator, Boolean checkboxStatus) {
-        if (driver.findElement(By.xpath(checkboxLocator)).isSelected() == checkboxStatus) {
-            driver.findElement(By.xpath(checkboxLocator)).click();
-            sleepInSeconds(1);
-        }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     @Test
     public void TC_02_Default() {
         driver.get("https://demos.telerik.com/kendo-ui/checkbox/index");
-        sleepInSeconds(1);
 
-        String checkbox = "//label[text()='Dual-zone air conditioning']/preceding-sibling::input";
+        ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,300)");
 
-        checkboxSelect(checkbox, false);
-        Assert.assertTrue(driver.findElement(By.xpath(checkbox)).isSelected());
+        By checkboxLocator = By.xpath("//label[text()='Dual-zone air conditioning']/preceding-sibling::input");
 
-        checkboxSelect(checkbox, true);
-        Assert.assertFalse(driver.findElement(By.xpath(checkbox)).isSelected());
+        selectOrDeselectCheckbox(checkboxLocator, true);
+        Assert.assertTrue(findVisibleElement(checkboxLocator).isSelected());
+
+        selectOrDeselectCheckbox(checkboxLocator, false);
+        Assert.assertFalse(findVisibleElement(checkboxLocator).isSelected());
 
         driver.get("https://demos.telerik.com/kendo-ui/radiobutton/index");
-        sleepInSeconds(1);
 
-        String radioBtn = "//label[text()='2.0 Petrol, 147kW']/preceding-sibling::input";
-        checkboxSelect(radioBtn, false);
-        Assert.assertTrue(driver.findElement(By.xpath(radioBtn)).isSelected());
+        ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,300)");
+
+        By radioLocator = By.xpath("//label[text()='2.0 Petrol, 147kW']/preceding-sibling::input");
+
+        selectRadioBtn(radioLocator);
+        Assert.assertTrue(findVisibleElement(radioLocator).isSelected());
     }
 
     @Test
-    public void TC_03_Default() {
+    public void TC_03_Angular() {
         driver.get("https://material.angular.io/components/radio/examples");
-        sleepInSeconds(1);
+        // can not wait for visibility on this page
 
-        WebElement radioBtnElement = driver.findElement(By.xpath("//input[@value='Summer']"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", radioBtnElement);
-        sleepInSeconds(1);
+        By radioLocator = By.xpath("//input[@value='Summer']");
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", driver.findElement(radioLocator));
 
-        radioBtnElement.click();
-        sleepInSeconds(1);
-        Assert.assertTrue(radioBtnElement.isSelected());
+        selectRadioBtnAngular(radioLocator);
+        Assert.assertTrue(driver.findElement(radioLocator).isSelected());
 
         driver.get("https://material.angular.io/components/checkbox/examples");
-        sleepInSeconds(1);
+        // can not wait for visibility on this page
 
-        String checkedCheckbox = "//label[text()='Checked']/preceding-sibling::div/input";
-        String indeterminateCheckbox = "//label[text()='Indeterminate']/preceding-sibling::div/input";
+        By checkedCheckbox = By.xpath("//label[text()='Checked']/preceding-sibling::div/input");
+        By indeterminateCheckbox = By.xpath("//label[text()='Indeterminate']/preceding-sibling::div/input");
 
-        checkboxSelect(checkedCheckbox, false);
-        Assert.assertTrue(driver.findElement(By.xpath(checkedCheckbox)).isSelected());
-        checkboxSelect(indeterminateCheckbox, false);
-        Assert.assertTrue(driver.findElement(By.xpath(indeterminateCheckbox)).isSelected());
+        selectOrDeselectCheckboxAngular(checkedCheckbox, true);
+        Assert.assertTrue(driver.findElement(checkedCheckbox).isSelected());
 
-        checkboxSelect(checkedCheckbox, true);
-        Assert.assertFalse(driver.findElement(By.xpath(checkedCheckbox)).isSelected());
-        checkboxSelect(indeterminateCheckbox, true);
-        Assert.assertFalse(driver.findElement(By.xpath(indeterminateCheckbox)).isSelected());
+        selectOrDeselectCheckboxAngular(indeterminateCheckbox, true);
+        Assert.assertTrue(driver.findElement(indeterminateCheckbox).isSelected());
+
+        selectOrDeselectCheckboxAngular(checkedCheckbox, false);
+        Assert.assertFalse(driver.findElement(checkedCheckbox).isSelected());
+
+        selectOrDeselectCheckboxAngular(indeterminateCheckbox, false);
+        Assert.assertFalse(driver.findElement(indeterminateCheckbox).isSelected());
     }
 
     @Test
     public void TC_04_SelectAll_SelectOnly() {
         driver.get("https://automationfc.github.io/multiple-fields/");
-        List<WebElement> allCheckboxes = driver.findElements(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input"));
+        List<WebElement> allCheckboxes = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input")));
         for (WebElement checkbox : allCheckboxes) {
             if (!checkbox.isSelected()) {
-                checkbox.click();
+                explicitWait.until(ExpectedConditions.elementToBeClickable(checkbox)).click();
+                explicitWait.until(ExpectedConditions.elementToBeSelected(checkbox));
             }
-        }
-        for (WebElement checkbox : allCheckboxes) {
             Assert.assertTrue(checkbox.isSelected());
         }
 
         driver.manage().deleteAllCookies();
         driver.navigate().refresh();
-        allCheckboxes = driver.findElements(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input"));
+
+        allCheckboxes = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input")));
         for (WebElement checkbox : allCheckboxes) {
             if (checkbox.isSelected()) {
-                checkbox.click();
+                explicitWait.until(ExpectedConditions.elementToBeClickable(checkbox)).click();
+                explicitWait.until(ExpectedConditions.elementSelectionStateToBe(checkbox, false));
             }
-        }
-        for (WebElement checkbox : allCheckboxes) {
             Assert.assertFalse(checkbox.isSelected());
         }
+
+        allCheckboxes = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//label[text()=' Have you ever had (Please check all that apply) ']/following-sibling::div//span[@class='form-checkbox-item']//input")));
         for (WebElement checkbox : allCheckboxes) {
             if (!checkbox.isSelected() && checkbox.getAttribute("value").equals("Heart Attack")) {
-                checkbox.click();
+                explicitWait.until(ExpectedConditions.elementToBeClickable(checkbox)).click();
+                explicitWait.until(ExpectedConditions.elementToBeSelected(checkbox));
             }
-        }
-        for (WebElement checkbox : allCheckboxes) {
             if (checkbox.getAttribute("value").equals("Heart Attack")) {
                 Assert.assertTrue(checkbox.isSelected());
             } else {
@@ -127,48 +155,50 @@ public class Topic_09_p2_Checkbox_RadioButton {
         }
     }
 
-    @Test
+    // this page unavailable since 01/01/2024
+    // @Test
     public void TC_05_Custom_jsClick() {
         driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
-        sleepInSeconds(1);
-        WebElement radioBtnElement = driver.findElement(By.xpath("//div[text()='Đăng ký cho người thân']/preceding-sibling::div/input"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radioBtnElement);
-        sleepInSeconds(1);
-        Assert.assertTrue(radioBtnElement.isSelected());
+
+        By radioLocator = By.xpath("//div[text()='Đăng ký cho người thân']/preceding-sibling::div/input");
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(radioLocator));
+        explicitWait.until(ExpectedConditions.elementToBeSelected(radioLocator));
+        Assert.assertTrue(driver.findElement(radioLocator).isSelected());
     }
 
     @Test
     public void TC_06_Custom_GoogleDocs() {
         driver.get("https://docs.google.com/forms/d/e/1FAIpQLSfiypnd69zhuDkjKgqvpID9kwO29UCzeCVrGGtbNPZXQok0jA/viewform");
-        sleepInSeconds(2);
-        List<WebElement> radioGroup = driver.findElements(By.cssSelector("div[role='radio']"));
-        for (WebElement radio : radioGroup) {
-            Assert.assertEquals(radio.getAttribute("aria-checked"), "false");
-        }
+
+        List<WebElement> radioGroup = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div[role='radio']")));
         for (WebElement radio : radioGroup) {
             if (radio.getAttribute("data-value").equals("Hà Nội")) {
-                radio.click();
-                sleepInSeconds(1);
+                explicitWait.until(ExpectedConditions.elementToBeClickable(radio)).click();
+                explicitWait.until(ExpectedConditions.attributeToBe(radio, "aria-checked", "true"));
+            }
+        }
+        radioGroup = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div[role='radio']")));
+        for (WebElement radio : radioGroup) {
+            if (radio.getAttribute("data-value").equals("Hà Nội")) {
                 Assert.assertEquals(radio.getAttribute("aria-checked"), "true");
             } else {
                 Assert.assertEquals(radio.getAttribute("aria-checked"), "false");
             }
         }
 
-        WebElement sendBtn = driver.findElement(By.xpath("//span[text()='Gửi']"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(false);", sendBtn);
-        sleepInSeconds(1);
-        List<WebElement> checkboxGroup = driver.findElements(By.cssSelector("div[role='checkbox']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(false)", driver.findElement(By.xpath("//span[text()='Gửi']")));
+
+        List<WebElement> checkboxGroup = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div[role='checkbox']")));
         for (WebElement checkbox : checkboxGroup) {
-            Assert.assertEquals(checkbox.getAttribute("aria-checked"), "false");
-        }
-        for (WebElement checkbox : checkboxGroup) {
-            if (checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("false")
-                    || !checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("true")) {
-                checkbox.click();
-                sleepInSeconds(1);
+            if (checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("false")) {
+                explicitWait.until(ExpectedConditions.elementToBeClickable(checkbox)).click();
+                explicitWait.until(ExpectedConditions.attributeToBe(checkbox, "aria-checked", "true"));
+            } else if (!checkbox.getAttribute("aria-label").startsWith("Quảng") && checkbox.getAttribute("aria-checked").equals("true")) {
+                explicitWait.until(ExpectedConditions.elementToBeClickable(checkbox)).click();
+                explicitWait.until(ExpectedConditions.attributeToBe(checkbox, "aria-checked", "false"));
             }
         }
+        checkboxGroup = explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div[role='checkbox']")));
         for (WebElement checkbox : checkboxGroup) {
             if (checkbox.getAttribute("aria-label").startsWith("Quảng")) {
                 Assert.assertEquals(checkbox.getAttribute("aria-checked"), "true");
@@ -177,8 +207,8 @@ public class Topic_09_p2_Checkbox_RadioButton {
             }
         }
 
-        sendBtn.click();
-        sleepInSeconds(1);
+        clickOnElement(By.xpath("//span[text()='Gửi']"));
+        Assert.assertTrue(findVisibleElement(By.xpath("//div[text()='Câu trả lời của bạn đã được ghi lại.']")).isDisplayed());
     }
 
     @AfterClass

@@ -2,7 +2,7 @@ package java_basic;
 
 import java.util.Date;
 
-public class JavaBasic_DateTime {
+public class Java_DateTime {
 
     public static String getDateTimeNow() {
         Date date = new Date();

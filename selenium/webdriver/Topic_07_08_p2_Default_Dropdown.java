@@ -5,7 +5,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -16,25 +18,27 @@ import java.util.Random;
 
 public class Topic_07_08_p2_Default_Dropdown {
     WebDriver driver;
-
-    @BeforeClass
-    public void beforeClass() {
-        driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
-    }
-
-    public void sleepInSeconds (long timeInSecond) {
-        try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    WebDriverWait explicitWait;
 
     public String getEmailRandom() {
         Random rand = new Random();
         return "automation" + rand.nextInt(999999) + "@gmail.com";
+    }
+    
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+    
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    @BeforeClass
+    public void beforeClass() {
+        driver = new FirefoxDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     @Test
@@ -44,49 +48,52 @@ public class Topic_07_08_p2_Default_Dropdown {
         String firstName = "Automation", lastName = "Testing", password = "Abcd@1234";
         String email = getEmailRandom();
 
-        driver.findElement(By.cssSelector("a.ico-register")).click();
-        driver.findElement(By.cssSelector("input#FirstName")).sendKeys(firstName);
-        driver.findElement(By.cssSelector("input#LastName")).sendKeys(lastName);
+        clickOnElement(By.cssSelector("a.ico-register"));
+        findVisibleElement(By.cssSelector("input#FirstName")).sendKeys(firstName);
+        findVisibleElement(By.cssSelector("input#LastName")).sendKeys(lastName);
 
-        Select day = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthDay']")));
+        Select day = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthDay']")));
         Assert.assertFalse(day.isMultiple());
         Assert.assertEquals(day.getOptions().size(),32);
         day.selectByVisibleText("1");
+        explicitWait.until(ExpectedConditions.elementToBeSelected(By.xpath("//option[text()='1']")));
 
-        Select month = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthMonth']")));
+        Select month = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthMonth']")));
         Assert.assertFalse(month.isMultiple());
         Assert.assertEquals(month.getOptions().size(),13);
         month.selectByVisibleText("May");
+        explicitWait.until(ExpectedConditions.elementToBeSelected(By.xpath("//option[text()='May']")));
 
-        Select year = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthYear']")));
+        Select year = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthYear']")));
         Assert.assertFalse(year.isMultiple());
         Assert.assertEquals(year.getOptions().size(),112);
         year.selectByVisibleText("1980");
+        explicitWait.until(ExpectedConditions.elementToBeSelected(By.xpath("//option[text()='1980']")));
 
-        driver.findElement(By.cssSelector("input#Email")).sendKeys(email);
-        driver.findElement(By.cssSelector("input#Password")).sendKeys(password);
-        driver.findElement(By.cssSelector("input#ConfirmPassword")).sendKeys(password);
-        driver.findElement(By.cssSelector("button#register-button")).click();
+        findVisibleElement(By.cssSelector("input#Email")).sendKeys(email);
+        findVisibleElement(By.cssSelector("input#Password")).sendKeys(password);
+        findVisibleElement(By.cssSelector("input#ConfirmPassword")).sendKeys(password);
+        clickOnElement(By.cssSelector("button#register-button"));
 
-        sleepInSeconds(2);
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.result")).getText(),"Your registration completed");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.result")).getText(),"Your registration completed");
 
-        driver.findElement(By.xpath("//a[text()='Continue']")).click();
+        clickOnElement(By.xpath("//a[text()='Continue']"));
+        explicitWait.until(ExpectedConditions.urlToBe("https://demo.nopcommerce.com/"));
         Assert.assertEquals(driver.getCurrentUrl(),"https://demo.nopcommerce.com/");
 
-        driver.findElement(By.cssSelector("a.ico-login")).click();
-        driver.findElement(By.cssSelector("input#Email")).sendKeys(email);
-        driver.findElement(By.cssSelector("input#Password")).sendKeys(password);
-        driver.findElement(By.xpath("//button[text()='Log in']")).click();
-        driver.findElement(By.cssSelector("a.ico-account")).click();
+        clickOnElement(By.cssSelector("a.ico-login"));
+        findVisibleElement(By.cssSelector("input#Email")).sendKeys(email);
+        findVisibleElement(By.cssSelector("input#Password")).sendKeys(password);
+        clickOnElement(By.xpath("//button[text()='Log in']"));
+        clickOnElement(By.cssSelector("a.ico-account"));
 
-        Select verifyDay = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthDay']")));
+        Select verifyDay = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthDay']")));
         Assert.assertEquals(verifyDay.getFirstSelectedOption().getText(),"1");
 
-        Select verifyMonth = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthMonth']")));
+        Select verifyMonth = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthMonth']")));
         Assert.assertEquals(verifyMonth.getFirstSelectedOption().getText(),"May");
 
-        Select verifyYear = new Select(driver.findElement(By.cssSelector("select[name='DateOfBirthYear']")));
+        Select verifyYear = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthYear']")));
         Assert.assertEquals(verifyYear.getFirstSelectedOption().getText(),"1980");
 
         System.out.println("User Information:\n");
@@ -95,49 +102,46 @@ public class Topic_07_08_p2_Default_Dropdown {
         System.out.println("Email:\t\t\t " + email);
     }
 
-    @Test
+    // 404 - Page not found
+    // @Test
     public void TC_06_Default_Dropdown() {
         driver.get("https://applitools.com/automating-tests-chrome-devtools-recorder-webinar/");
 
         String firstName = "Automation", lastName = "Testing", company = "Automation FC";
         String email = getEmailRandom();
 
-        driver.findElement(By.cssSelector("input#Email")).sendKeys(email);
-        driver.findElement(By.cssSelector("input#FirstName")).sendKeys(firstName);
-        driver.findElement(By.cssSelector("input#LastName")).sendKeys(lastName);
+        findVisibleElement(By.cssSelector("input#Email")).sendKeys(email);
+        findVisibleElement(By.cssSelector("input#FirstName")).sendKeys(firstName);
+        findVisibleElement(By.cssSelector("input#LastName")).sendKeys(lastName);
 
-        Select jobFunction = new Select(driver.findElement(By.xpath("//option[text()='*Job Function']/parent::select")));
+        Select jobFunction = new Select(findVisibleElement(By.xpath("//option[text()='*Job Function']/parent::select")));
         Assert.assertFalse(jobFunction.isMultiple());
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", jobFunction);
-        sleepInSeconds(1);
         jobFunction.selectByVisibleText("SDET / Test Automation Engineer");
         System.out.println("Job Function:\n" + jobFunction.getFirstSelectedOption().getText());
         System.out.println("Number of Options: " + jobFunction.getOptions().size());
 
-        driver.findElement(By.cssSelector("input#Company")).sendKeys(company);
+        findVisibleElement(By.cssSelector("input#Company")).sendKeys(company);
 
-        Select testFramework = new Select(driver.findElement(By.xpath("//option[text()='*Existing Test Framework']/parent::select")));
+        Select testFramework = new Select(findVisibleElement(By.xpath("//option[text()='*Existing Test Framework']/parent::select")));
         Assert.assertFalse(testFramework.isMultiple());
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", testFramework);
-        sleepInSeconds(1);
         testFramework.selectByVisibleText("Selenium");
         System.out.println("Existing Test Framework:\n" + testFramework.getFirstSelectedOption().getText());
         System.out.println("Number of Options: " + testFramework.getOptions().size());
 
-        Select country = new Select(driver.findElement(By.xpath("//option[text()='*Country']/parent::select")));
+        Select country = new Select(findVisibleElement(By.xpath("//option[text()='*Country']/parent::select")));
         Assert.assertFalse(country.isMultiple());
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", country);
-        sleepInSeconds(1);
         country.selectByVisibleText("Greece");
         System.out.println("Country:\n" + country.getFirstSelectedOption().getText());
         System.out.println("Number of Options: " + country.getOptions().size());
 
-        WebElement checkBox = driver.findElement(By.cssSelector("input#Opt_In_Compliance__c"));
-        if (checkBox.isSelected()) {
-            checkBox.click();
+        if (findVisibleElement(By.cssSelector("input#Opt_In_Compliance__c")).isSelected()) {
+            clickOnElement(By.cssSelector("input#Opt_In_Compliance__c"));
         }
-        driver.findElement(By.xpath("//button[text()='REGISTER NOW']")).click();
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.mktoErrorMsg")).getText(),"This field is required.");
+        clickOnElement(By.xpath("//button[text()='REGISTER NOW']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.mktoErrorMsg")).getText(),"This field is required.");
     }
 
     @AfterClass

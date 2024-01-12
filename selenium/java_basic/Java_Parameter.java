@@ -1,6 +1,6 @@
 package java_basic;
 
-public class JavaBasic_Parameter {
+public class Java_Parameter {
 
     static String fullNameGlobal = "First";
 
@@ -17,7 +17,7 @@ public class JavaBasic_Parameter {
         System.out.println(getFullName()); // in ra fullNameGlobal từ hàm getFullName()
 
 
-        JavaBasic_Parameter topic = new JavaBasic_Parameter(); // khai báo biến object để sử dụng
+        Java_Parameter topic = new Java_Parameter(); // khai báo biến object để sử dụng
         topic.setFullName2("Third");
         System.out.println(topic.getFullName2());
 

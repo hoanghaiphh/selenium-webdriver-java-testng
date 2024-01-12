@@ -1,10 +1,7 @@
 package webdriver;
 
 import org.apache.commons.codec.binary.Base64;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -25,86 +22,90 @@ import java.util.Optional;
 
 public class Topic_09_p3_Alert {
     WebDriver driver;
+    WebDriverWait explicitWait;
 
-    public void sleepInSeconds (long timeInSecond) {
-        try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void openBrowser(WebDriver webDriver) {
+        driver = webDriver;
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     @Test
     public void TC_07_08_09_Alert() {
-        driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
-
+        openBrowser(new FirefoxDriver());
         driver.get("https://automationfc.github.io/basic-form/index.html");
-        WebDriverWait explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement result = driver.findElement(By.cssSelector("p#result"));
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.xpath("//button[text()='Click for JS Alert']")));
-        driver.findElement(By.xpath("//button[text()='Click for JS Alert']")).click();
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS Alert");
-        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
-        sleepInSeconds(1);
-        Assert.assertEquals(result.getText(), "You clicked an alert successfully");
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(false); window.scrollBy(0,500);", driver.findElement(By.xpath("//button[text()='Click for JS Alert']")));
 
-        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS Confirm");
-        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
-        sleepInSeconds(1);
-        Assert.assertEquals(result.getText(), "You clicked: Ok");
-        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
-        explicitWait.until(ExpectedConditions.alertIsPresent()).dismiss();
-        sleepInSeconds(1);
-        Assert.assertEquals(result.getText(), "You clicked: Cancel");
+        clickOnElement(By.xpath("//button[text()='Click for JS Alert']"));
+        Alert alert = explicitWait.until(ExpectedConditions.alertIsPresent());
+        Assert.assertEquals(alert.getText(), "I am a JS Alert");
+        alert.accept();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("p#result")).getText(), "You clicked an alert successfully");
 
-        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
-        Assert.assertEquals(explicitWait.until(ExpectedConditions.alertIsPresent()).getText(), "I am a JS prompt");
+        clickOnElement(By.xpath("//button[text()='Click for JS Confirm']"));
+        alert = explicitWait.until(ExpectedConditions.alertIsPresent());
+        Assert.assertEquals(alert.getText(), "I am a JS Confirm");
+        alert.accept();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("p#result")).getText(), "You clicked: Ok");
+
+        clickOnElement(By.xpath("//button[text()='Click for JS Confirm']"));
+        alert = explicitWait.until(ExpectedConditions.alertIsPresent());
+        alert.dismiss();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("p#result")).getText(), "You clicked: Cancel");
+
+        clickOnElement(By.xpath("//button[text()='Click for JS Prompt']"));
+        alert = explicitWait.until(ExpectedConditions.alertIsPresent());
+        Assert.assertEquals(alert.getText(), "I am a JS prompt");
         String alertSendKeys = "Automation Testing";
-        explicitWait.until(ExpectedConditions.alertIsPresent()).sendKeys(alertSendKeys);
-        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
-        sleepInSeconds(1);
-        Assert.assertEquals(result.getText(), "You entered: " + alertSendKeys);
-        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
-        explicitWait.until(ExpectedConditions.alertIsPresent()).dismiss();
-        sleepInSeconds(1);
-        Assert.assertEquals(result.getText(), "You entered: null");
+        alert.sendKeys(alertSendKeys);
+        alert.accept();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("p#result")).getText(), "You entered: " + alertSendKeys);
+
+        clickOnElement(By.xpath("//button[text()='Click for JS Prompt']"));
+        alert = explicitWait.until(ExpectedConditions.alertIsPresent());
+        alert.dismiss();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("p#result")).getText(), "You entered: null");
 
         driver.quit();
     }
 
     @Test
     public void TC_11a_Authentication_Alert_Bypass_Link() {
-        // access directly by link
-        driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        openBrowser(new FirefoxDriver());
 
+        // access directly by link
         driver.get("http://admin:admin@the-internet.herokuapp.com/basic_auth");
-        sleepInSeconds(1);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+        Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
     }
 
     @Test
     public void TC_11b_Authentication_Alert_Bypass_Link() {
-        // move from another page
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        openBrowser(new ChromeDriver());
 
+        // move from another page
         driver.get("http://the-internet.herokuapp.com");
+
         String originUrl = driver.findElement(By.xpath("//a[text()='Basic Auth']")).getAttribute("href");
         String userName = "admin", password = "admin";
         String[] originUrlArray = originUrl.split("//");
         String authenUrl = originUrlArray[0] + "//" + userName + ":" + password + "@" + originUrlArray[1];
+
         driver.get(authenUrl);
-        sleepInSeconds(1);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+        Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
     }
@@ -115,24 +116,22 @@ public class Topic_09_p3_Alert {
     }
     @Test
     public void TC_11c_Authentication_Alert_Bypass_Link() {
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        openBrowser(new ChromeDriver());
         driver.get("http://the-internet.herokuapp.com");
 
-        driver.get(getAuthenUrl(driver.findElement(By.xpath("//a[text()='Basic Auth']")).getAttribute("href"), "admin", "admin"));
-        sleepInSeconds(1);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+        String authenUrl = getAuthenUrl(driver.findElement(By.xpath("//a[text()='Basic Auth']")).getAttribute("href"), "admin", "admin");
+
+        driver.get(authenUrl);
+
+        Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
     }
 
     @Test
-    public void TC_12a_Authentication_Alert_AutoIT() throws IOException {
+    public void TC_12a_Authentication_Alert_AutoIT() throws IOException, InterruptedException {
         if (System.getProperty("os.name").contains("Windows")) {
-            driver = new FirefoxDriver();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-            driver.manage().window().maximize();
+            openBrowser(new FirefoxDriver());
 
             String username = "admin", password = "admin";
             String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
@@ -142,9 +141,11 @@ public class Topic_09_p3_Alert {
             } else if (driver.toString().contains("chrome")) {
                 Runtime.getRuntime().exec(new String[]{chromeAuthen, username, password});
             }
+
             driver.get("http://the-internet.herokuapp.com/basic_auth");
-            sleepInSeconds(7);
-            Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+            Thread.sleep(5000); // not necessary if run on Chrome
+
+            Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
             driver.quit();
         }
@@ -152,9 +153,7 @@ public class Topic_09_p3_Alert {
     @Test
     public void TC_12b_Authentication_Alert_AutoIT() throws IOException {
         if (System.getProperty("os.name").contains("Windows")) {
-            driver = new ChromeDriver();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-            driver.manage().window().maximize();
+            openBrowser(new ChromeDriver());
 
             String username = "admin", password = "admin";
             String firefoxAuthen = System.getProperty("user.dir") + "\\autoIT\\authen_firefox.exe";
@@ -164,9 +163,10 @@ public class Topic_09_p3_Alert {
             } else if (driver.toString().contains("chrome")) {
                 Runtime.getRuntime().exec(new String[]{chromeAuthen, username, password});
             }
+
             driver.get("http://the-internet.herokuapp.com/basic_auth");
-            sleepInSeconds(7);
-            Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+            Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
             driver.quit();
         }
@@ -177,9 +177,7 @@ public class Topic_09_p3_Alert {
         // Only use for browser base on Chromium
         // Selenium version need to have devtools version compatible with Chromium version
         // Base64 lib: common-codec
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        openBrowser(new ChromeDriver());
 
         // Get DevTool object
         DevTools devTools = ((HasDevTools) driver).getDevTools();
@@ -199,16 +197,14 @@ public class Topic_09_p3_Alert {
         devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
 
         driver.get("https://the-internet.herokuapp.com/basic_auth");
-        sleepInSeconds(5);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+        Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
     }
     @Test
     public void TC_13b_Authentication_Alert_CDP() {
-        driver = new EdgeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
+        openBrowser(new EdgeDriver());
 
         DevTools devTools = ((HasDevTools) driver).getDevTools();
         devTools.createSession();
@@ -220,8 +216,8 @@ public class Topic_09_p3_Alert {
         devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
 
         driver.get("https://the-internet.herokuapp.com/basic_auth");
-        sleepInSeconds(5);
-        Assert.assertTrue(driver.findElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
+
+        Assert.assertTrue(findVisibleElement(By.xpath("//p[contains(text(),'Congratulations! You must have the proper credentials.')]")).isDisplayed());
 
         driver.quit();
     }

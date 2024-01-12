@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-public class JavaBasic_DataType_Collection {
+public class Java_Collection {
     // COLLECTION: List - Set - Queue
 
     // LIST: --------------------------------------------------

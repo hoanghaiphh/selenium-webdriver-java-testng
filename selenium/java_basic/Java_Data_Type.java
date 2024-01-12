@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.*;
 
-public class JavaBasic_Data_Type {
+public class Java_Data_Type {
     public int studentNumber = 200;
     // Khai báo biến: Phạm vi truy cập - Kiểu dữ liệu - Tên biến - Giá trị của biến (Nếu như không gán thì lấy dữ liệu mặc định)
     // Phạm vi truy cập: Access Modifier (public/ private/ protected/ default)
@@ -27,7 +27,7 @@ public class JavaBasic_Data_Type {
     // 2.1 Class
     FirefoxDriver firefoxDriver;
     Select select;
-    JavaBasic_Data_Type topic01;
+    Java_Data_Type topic01;
     Object name = "Automation FC";
 
     // 2.2 Interface

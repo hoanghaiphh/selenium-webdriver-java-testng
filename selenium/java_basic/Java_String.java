@@ -11,7 +11,7 @@ import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
-public class JavaBasic_DataType_String {
+public class Java_String {
     WebDriver driver;
 
     public String splitAndMerge(String text) { // split and merge String

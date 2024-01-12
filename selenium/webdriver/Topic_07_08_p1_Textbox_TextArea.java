@@ -14,218 +14,206 @@ import java.util.Random;
 
 public class Topic_07_08_p1_Textbox_TextArea {
     WebDriver driver;
-
-    @BeforeClass
-    public void beforeClass() {
-        driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.manage().window().maximize();
-    }
-
-    public void sleepInSeconds (long timeInSecond) {
-        try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    WebDriverWait explicitWait;
 
     public String getEmailRandom() {
         Random rand = new Random();
         return "automation" + rand.nextInt(999999) + "@gmail.com";
         // return "automation" + new Random().nextInt(999999) + "@gmail.com"
     }
+
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public void waitForInvisibility(By locator) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
+        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+    }
+
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    @BeforeClass
+    public void beforeClass() {
+        driver = new FirefoxDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+    }
+
     @Test
     public void TC_01_Register_Login() {
         // Login with empty data
         driver.get("http://live.techpanda.org/");
 
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("send2")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
+        findVisibleElement(By.id("pass")).clear();
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.id("advice-required-entry-email")).getText(),"This is a required field.");
-        Assert.assertEquals(driver.findElement(By.id("advice-required-entry-pass")).getText(),"This is a required field.");
+        Assert.assertEquals(findVisibleElement(By.id("advice-required-entry-email")).getText(),"This is a required field.");
+        Assert.assertEquals(findVisibleElement(By.id("advice-required-entry-pass")).getText(),"This is a required field.");
 
         // Login with invalid email
         driver.get("http://live.techpanda.org/");
 
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys("123@12.123");
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys("123456");
-        driver.findElement(By.id("send2")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
+        findVisibleElement(By.id("email")).sendKeys("123@12.123");
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys("123456");
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.id("advice-validate-email-email")).getText(),"Please enter a valid email address. For example johndoe@domain.com.");
+        Assert.assertEquals(findVisibleElement(By.id("advice-validate-email-email")).getText(),"Please enter a valid email address. For example johndoe@domain.com.");
 
         // Login with invalid password
         driver.get("http://live.techpanda.org/");
 
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys("automation@gmail.com");
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys("123");
-        driver.findElement(By.id("send2")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
+        findVisibleElement(By.id("email")).sendKeys("automation@gmail.com");
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys("123");
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.id("advice-validate-password-pass")).getText(),"Please enter 6 or more characters without leading or trailing spaces.");
+        Assert.assertEquals(findVisibleElement(By.id("advice-validate-password-pass")).getText(),"Please enter 6 or more characters without leading or trailing spaces.");
 
         // Login with incorrect email
         driver.get("http://live.techpanda.org/");
 
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
         String incorrectEmail = getEmailRandom();
         System.out.println("Login_04:\n" + incorrectEmail);
-        driver.findElement(By.id("email")).sendKeys(incorrectEmail);
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys("123123123");
-        driver.findElement(By.id("send2")).click();
+        findVisibleElement(By.id("email")).sendKeys(incorrectEmail);
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys("123123123");
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
 
         // Register
         driver.get("http://live.techpanda.org/");
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.xpath("//span[text()='Create an Account']")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        clickOnElement(By.xpath("//span[text()='Create an Account']"));
 
         String firstName = "Hai", middleName = "Hoang", lastName = "Phan", password = "Abc@1234";
         String fullName = firstName + " " + middleName + " " + lastName;
         String email = getEmailRandom();
 
-        driver.findElement(By.cssSelector("input[id='firstname']")).sendKeys(firstName);
-        driver.findElement(By.cssSelector("input[id='middlename']")).sendKeys(middleName);
-        driver.findElement(By.cssSelector("input[id='lastname']")).sendKeys(lastName);
-        driver.findElement(By.cssSelector("input[id='email_address']")).sendKeys(email);
-        driver.findElement(By.cssSelector("input[id='password']")).sendKeys(password);
-        driver.findElement(By.cssSelector("input[id='confirmation']")).sendKeys(password);
-        driver.findElement(By.xpath("//span[text()='Register']")).click();
+        findVisibleElement(By.cssSelector("input[id='firstname']")).sendKeys(firstName);
+        findVisibleElement(By.cssSelector("input[id='middlename']")).sendKeys(middleName);
+        findVisibleElement(By.cssSelector("input[id='lastname']")).sendKeys(lastName);
+        findVisibleElement(By.cssSelector("input[id='email_address']")).sendKeys(email);
+        findVisibleElement(By.cssSelector("input[id='password']")).sendKeys(password);
+        findVisibleElement(By.cssSelector("input[id='confirmation']")).sendKeys(password);
+        clickOnElement(By.xpath("//span[text()='Register']"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("li[class='success-msg'] span")).getText(),"Thank you for registering with Main Website Store.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li[class='success-msg'] span")).getText(),"Thank you for registering with Main Website Store.");
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
 
-        String contactInfo = driver.findElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p")).getText();
+        String contactInfo = findVisibleElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p")).getText();
         Assert.assertTrue(contactInfo.contains(fullName));
         Assert.assertTrue(contactInfo.contains(email));
         System.out.println("Login_05:\n" + contactInfo);
 
-        driver.findElement(By.xpath("//header//span[text()='Account']")).click();
-        driver.findElement(By.xpath("//a[text()='Log Out']")).click();
-        sleepInSeconds(6);
+        clickOnElement(By.xpath("//header//span[text()='Account']"));
+        clickOnElement(By.xpath("//a[text()='Log Out']"));
 
         // Login success
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys(password);
-        driver.findElement(By.id("send2")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
+        findVisibleElement(By.id("email")).sendKeys(email);
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys(password);
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
 
-        contactInfo = driver.findElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p")).getText();
+        contactInfo = findVisibleElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p")).getText();
         Assert.assertTrue(contactInfo.contains(fullName));
         Assert.assertTrue(contactInfo.contains(email));
 
-        driver.findElement(By.xpath("//a[text()='Account Information']")).click();
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[id='firstname']")).getAttribute("value"),firstName);
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[id='middlename']")).getAttribute("value"),middleName);
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[id='lastname']")).getAttribute("value"),lastName);
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[id='email']")).getAttribute("value"),email);
+        clickOnElement(By.xpath("//a[text()='Account Information']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[id='firstname']")).getAttribute("value"),firstName);
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[id='middlename']")).getAttribute("value"),middleName);
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[id='lastname']")).getAttribute("value"),lastName);
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[id='email']")).getAttribute("value"),email);
 
         // Change password
-        driver.findElement(By.cssSelector("input[id='current_password']")).sendKeys(password);
-        if (!(driver.findElement(By.id("change_password")).isSelected())) {
-            driver.findElement(By.id("change_password")).click();
+        findVisibleElement(By.cssSelector("input[id='current_password']")).sendKeys(password);
+        if (!(findVisibleElement(By.id("change_password")).isSelected())) {
+            clickOnElement(By.id("change_password"));
         }
 
         String newPassword = "Def!5678";
-        driver.findElement(By.id("password")).sendKeys(newPassword);
-        driver.findElement(By.id("confirmation")).sendKeys(newPassword);
-        driver.findElement(By.cssSelector("button[title='Save']")).click();
+        findVisibleElement(By.id("password")).sendKeys(newPassword);
+        findVisibleElement(By.id("confirmation")).sendKeys(newPassword);
+        clickOnElement(By.cssSelector("button[title='Save']"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("li[class='success-msg'] span")).getText(),"The account information has been saved.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li[class='success-msg'] span")).getText(),"The account information has been saved.");
 
         // Login with incorrect password (old password)
-        driver.findElement(By.xpath("//header//span[text()='Account']")).click();
-        driver.findElement(By.xpath("//a[text()='Log Out']")).click();
-        sleepInSeconds(6);
+        clickOnElement(By.xpath("//header//span[text()='Account']"));
+        clickOnElement(By.xpath("//a[text()='Log Out']"));
 
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys(password);
-        driver.findElement(By.id("send2")).click();
+        clickOnElement(By.xpath("//div[@class='footer']//a[text()='My Account']"));
+        findVisibleElement(By.id("email")).clear();
+        findVisibleElement(By.id("email")).sendKeys(email);
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys(password);
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
 
         // Re login with new password
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys(newPassword);
-        driver.findElement(By.id("send2")).click();
+        findVisibleElement(By.id("pass")).clear();
+        findVisibleElement(By.id("pass")).sendKeys(newPassword);
+        clickOnElement(By.id("send2"));
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
-
-        // Logout
-        driver.findElement(By.xpath("//header//span[text()='Account']")).click();
-        driver.findElement(By.xpath("//a[text()='Log Out']")).click();
-        sleepInSeconds(6);
-
-        // Login with incorrect password
-        driver.get("http://live.techpanda.org/");
-
-        driver.findElement(By.xpath("//div[@class='footer']//a[text()='My Account']")).click();
-        driver.findElement(By.id("email")).clear();
-        System.out.println("Login_06:\n" + email);
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("pass")).clear();
-        driver.findElement(By.id("pass")).sendKeys("123123123");
-        driver.findElement(By.id("send2")).click();
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),"Invalid login or password.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.welcome-msg strong")).getText(),"Hello, " + fullName + "!");
     }
 
     @Test
     public void TC_02_NoShow_AttributeValue() {
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
-        driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
-        driver.findElement(By.cssSelector("input[name='password']")).sendKeys("admin123");
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//span[text()='PIM']")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//a[text()='Add Employee']")).click();
-        sleepInSeconds(3);
+        findVisibleElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
+        findVisibleElement(By.cssSelector("input[name='password']")).sendKeys("admin123");
+        clickOnElement(By.cssSelector("button[type='submit']"));
+
+        clickOnElement(By.xpath("//span[text()='PIM']"));
+        clickOnElement(By.xpath("//a[text()='Add Employee']"));
 
         // Step 05: Nhập thông tin hợp lệ
         String firstName = "Automation", lastName = "Testing", password = "Abcd@1234";
         String userName = "automation" + Math.round(Math.random()*1000000);
         String passport= "40517-402-96-7202", comments = "This is generated data of real people";
 
-        driver.findElement(By.cssSelector("input[placeholder='First Name']")).sendKeys(firstName);
-        driver.findElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys(lastName);
-        String employeeID = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value");
+        findVisibleElement(By.cssSelector("input[placeholder='First Name']")).sendKeys(firstName);
+        findVisibleElement(By.cssSelector("input[placeholder='Last Name']")).sendKeys(lastName);
 
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
-        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(userName);
-        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).clear();
-        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys(password);
-        driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys(password);
-        driver.findElement(By.xpath("//button[text()=' Save ']")).click();
-        sleepInSeconds(3);
+        waitForInvisibility(By.cssSelector("div.oxd-form-loader"));
+        String employeeID = findVisibleElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value");
+
+        clickOnElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div//span"));
+
+        findVisibleElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).clear();
+        findVisibleElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(userName);
+        findVisibleElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).clear();
+        findVisibleElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys(password);
+        findVisibleElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys(password);
+        clickOnElement(By.xpath("//button[text()=' Save ']"));
 
         // Step 07: Verify dữ liệu đã nhập
-        WebElement firstNameTextbox = driver.findElement(By.cssSelector("input[name='firstName']"));
-        WebElement lastNameTextbox = driver.findElement(By.cssSelector("input[name='lastName']"));
-        WebElement employeeIdTextbox = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+        waitForInvisibility(By.cssSelector("div.oxd-form-loader"));
+        WebElement firstNameTextbox = findVisibleElement(By.cssSelector("input[name='firstName']"));
+        WebElement lastNameTextbox = findVisibleElement(By.cssSelector("input[name='lastName']"));
+        WebElement employeeIdTextbox = findVisibleElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
         Assert.assertEquals(firstNameTextbox.getAttribute("value"),firstName);
         Assert.assertEquals(lastNameTextbox.getAttribute("value"),lastName);
         Assert.assertEquals(employeeIdTextbox.getAttribute("value"),employeeID);
@@ -233,23 +221,20 @@ public class Topic_07_08_p1_Textbox_TextArea {
         System.out.println("\tFullname: " + firstNameTextbox.getAttribute("value") + " " + lastNameTextbox.getAttribute("value"));
         System.out.println("\tID: " + employeeIdTextbox.getAttribute("value"));
 
-        driver.findElement(By.xpath("//a[text()='Immigration']")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button")).click();
-        sleepInSeconds(3);
+        clickOnElement(By.xpath("//a[text()='Immigration']"));
+        clickOnElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button"));
 
         // Step 10: Nhập dữ liệu và click save
-        driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys(passport);
-        driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']")).sendKeys(comments);
-        driver.findElement(By.xpath("//button[text()=' Save ']")).click();
-        sleepInSeconds(3);
+        findVisibleElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys(passport);
+        findVisibleElement(By.cssSelector("textarea[placeholder='Type Comments here']")).sendKeys(comments);
+        clickOnElement(By.xpath("//button[text()=' Save ']"));
 
-        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
-        sleepInSeconds(3);
+        clickOnElement(By.cssSelector("i.bi-pencil-fill"));
 
         // Step 12: Verify dữ liệu đã nhập
-        WebElement passportTextbox = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
-        WebElement commentsTextarea = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
+        waitForInvisibility(By.cssSelector("div.oxd-form-loader"));
+        WebElement passportTextbox = findVisibleElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+        WebElement commentsTextarea = findVisibleElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
         Assert.assertEquals(passportTextbox.getAttribute("value"),passport);
         Assert.assertEquals(commentsTextarea.getAttribute("value"),comments);
         System.out.println("Step 12 - Verify #2:");
@@ -257,24 +242,21 @@ public class Topic_07_08_p1_Textbox_TextArea {
         System.out.println("\tComments: " + commentsTextarea.getAttribute("value"));
 
         // Step 14: Click vào tên user và Logout
-        driver.findElement(By.cssSelector("span.oxd-userdropdown-tab")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.xpath("//a[text()='Logout']")).click();
-        sleepInSeconds(3);
+        clickOnElement(By.cssSelector("span.oxd-userdropdown-tab"));
+        clickOnElement(By.xpath("//a[text()='Logout']"));
 
         // Step 15: Tại màn hình login nhập thông tin hợp lệ đã tạo ở Step 05
-        driver.findElement(By.cssSelector("input[name='username']")).sendKeys(userName);
-        driver.findElement(By.cssSelector("input[name='password']")).sendKeys(password);
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-        sleepInSeconds(3);
+        findVisibleElement(By.cssSelector("input[name='username']")).sendKeys(userName);
+        findVisibleElement(By.cssSelector("input[name='password']")).sendKeys(password);
+        clickOnElement(By.cssSelector("button[type='submit']"));
 
-        driver.findElement(By.xpath("//span[text()='My Info']")).click();
-        sleepInSeconds(3);
+        clickOnElement(By.xpath("//span[text()='My Info']"));
 
         // Step 17: Verify thông tin hiển thị
-        firstNameTextbox = driver.findElement(By.cssSelector("input[name='firstName']"));
-        lastNameTextbox = driver.findElement(By.cssSelector("input[name='lastName']"));
-        employeeIdTextbox = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+        waitForInvisibility(By.cssSelector("div.oxd-form-loader"));
+        firstNameTextbox = findVisibleElement(By.cssSelector("input[name='firstName']"));
+        lastNameTextbox = findVisibleElement(By.cssSelector("input[name='lastName']"));
+        employeeIdTextbox = findVisibleElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
         Assert.assertEquals(firstNameTextbox.getAttribute("value"),firstName);
         Assert.assertEquals(lastNameTextbox.getAttribute("value"),lastName);
         Assert.assertEquals(employeeIdTextbox.getAttribute("value"),employeeID);
@@ -282,14 +264,13 @@ public class Topic_07_08_p1_Textbox_TextArea {
         System.out.println("\tFullname: " + firstNameTextbox.getAttribute("value") + " " + lastNameTextbox.getAttribute("value"));
         System.out.println("\tID: " + employeeIdTextbox.getAttribute("value"));
 
-        driver.findElement(By.xpath("//a[text()='Immigration']")).click();
-        sleepInSeconds(3);
-        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
-        sleepInSeconds(3);
+        clickOnElement(By.xpath("//a[text()='Immigration']"));
+        clickOnElement(By.cssSelector("i.bi-pencil-fill"));
 
         // Step 19: Verify thông tin hiển thị
-        passportTextbox = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
-        commentsTextarea = driver.findElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
+        waitForInvisibility(By.cssSelector("div.oxd-form-loader"));
+        passportTextbox = findVisibleElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+        commentsTextarea = findVisibleElement(By.cssSelector("textarea[placeholder='Type Comments here']"));
         Assert.assertEquals(passportTextbox.getAttribute("value"),passport);
         Assert.assertEquals(commentsTextarea.getAttribute("value"),comments);
         System.out.println("Step 19 - Verify #4:");
@@ -300,95 +281,85 @@ public class Topic_07_08_p1_Textbox_TextArea {
     @Test
     public void TC_03_BlockAds_AcceptAlert() {
         driver.get("https://demo.guru99.com/");
-        sleepInSeconds(1);
 
         String emailGuru = getEmailRandom();
-        driver.findElement(By.cssSelector("input[name='emailid'")).sendKeys(emailGuru);
-        driver.findElement(By.cssSelector("input[name='btnLogin']")).click();
-        sleepInSeconds(1);
+        findVisibleElement(By.cssSelector("input[name='emailid'")).sendKeys(emailGuru);
+        clickOnElement(By.cssSelector("input[name='btnLogin']"));
 
-        String userID = driver.findElement(By.xpath("//td[text()='User ID :']/following-sibling::td")).getText();
-        String userPassword = driver.findElement(By.xpath("//td[text()='Password :']/following-sibling::td")).getText();
+        String userID = findVisibleElement(By.xpath("//td[text()='User ID :']/following-sibling::td")).getText();
+        String userPassword = findVisibleElement(By.xpath("//td[text()='Password :']/following-sibling::td")).getText();
         System.out.println("Email Guru: " + emailGuru);
         System.out.println("User ID: " + userID);
         System.out.println("Password: " + userPassword);
 
         driver.get("https://demo.guru99.com/v4/");
-        driver.findElement(By.cssSelector("input[name='uid']")).sendKeys(userID);
-        driver.findElement(By.cssSelector("input[name='password']")).sendKeys(userPassword);
-        driver.findElement(By.cssSelector("input[name='btnLogin']")).click();
-        sleepInSeconds(1);
+        
+        findVisibleElement(By.cssSelector("input[name='uid']")).sendKeys(userID);
+        findVisibleElement(By.cssSelector("input[name='password']")).sendKeys(userPassword);
+        clickOnElement(By.cssSelector("input[name='btnLogin']"));
 
-        driver.findElement(By.xpath("//a[text()='New Customer']")).click();
-        sleepInSeconds(1);
+        clickOnElement(By.xpath("//a[text()='New Customer']"));
 
-        driver.findElement(By.cssSelector("input[name='name']")).sendKeys("Automation Testing");
-        driver.findElement(By.xpath("//td[text()='Gender']/following-sibling::td/input[@value='m']")).click();
+        findVisibleElement(By.cssSelector("input[name='name']")).sendKeys("Automation Testing");
+        clickOnElement(By.xpath("//td[text()='Gender']/following-sibling::td/input[@value='m']"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].removeAttribute('type');", driver.findElement(By.cssSelector("input#dob")));
-        driver.findElement(By.cssSelector("input#dob")).sendKeys("10/20/1980");
-        driver.findElement(By.cssSelector("textarea[name='addr']")).sendKeys("12 Ly Tu Trong");
-        driver.findElement(By.cssSelector("input[name='city']")).sendKeys("Da Nang");
-        driver.findElement(By.cssSelector("input[name='state']")).sendKeys("Viet Nam");
-        driver.findElement(By.cssSelector("input[name='pinno']")).sendKeys("123456");
-        driver.findElement(By.cssSelector("input[name='telephoneno']")).sendKeys("0905123456");
+        findVisibleElement(By.cssSelector("input#dob")).sendKeys("10/20/1980");
+        findVisibleElement(By.cssSelector("textarea[name='addr']")).sendKeys("12 Ly Tu Trong");
+        findVisibleElement(By.cssSelector("input[name='city']")).sendKeys("Da Nang");
+        findVisibleElement(By.cssSelector("input[name='state']")).sendKeys("Viet Nam");
+        findVisibleElement(By.cssSelector("input[name='pinno']")).sendKeys("123456");
+        findVisibleElement(By.cssSelector("input[name='telephoneno']")).sendKeys("0905123456");
         String emailNewCustomer = getEmailRandom();
-        driver.findElement(By.cssSelector("input[name='emailid']")).sendKeys(emailNewCustomer);
-        driver.findElement(By.cssSelector("input[name='password']")).sendKeys("Abcd@1234");
-        driver.findElement(By.cssSelector("input[name='sub']")).click();
-        sleepInSeconds(1);
+        findVisibleElement(By.cssSelector("input[name='emailid']")).sendKeys(emailNewCustomer);
+        findVisibleElement(By.cssSelector("input[name='password']")).sendKeys("Abcd@1234");
+        clickOnElement(By.cssSelector("input[name='sub']"));
 
-        String customerID = driver.findElement(By.xpath("//td[text()='Customer ID']/following-sibling::td")).getText();
+        String customerID = findVisibleElement(By.xpath("//td[text()='Customer ID']/following-sibling::td")).getText();
         System.out.println("Customer ID: " + customerID);
 
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Customer Name']/following-sibling::td")).getText(),"Automation Testing");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Birthdate']/following-sibling::td")).getText(),"1980-10-20");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Address']/following-sibling::td")).getText(),"12 Ly Tu Trong");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='City']/following-sibling::td")).getText(),"Da Nang");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='State']/following-sibling::td")).getText(),"Viet Nam");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Pin']/following-sibling::td")).getText(),"123456");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Mobile No.']/following-sibling::td")).getText(),"0905123456");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Email']/following-sibling::td")).getText(), emailNewCustomer);
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Customer Name']/following-sibling::td")).getText(),"Automation Testing");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Birthdate']/following-sibling::td")).getText(),"1980-10-20");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Address']/following-sibling::td")).getText(),"12 Ly Tu Trong");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='City']/following-sibling::td")).getText(),"Da Nang");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='State']/following-sibling::td")).getText(),"Viet Nam");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Pin']/following-sibling::td")).getText(),"123456");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Mobile No.']/following-sibling::td")).getText(),"0905123456");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Email']/following-sibling::td")).getText(), emailNewCustomer);
 
-        driver.findElement(By.xpath("//a[text()='Edit Customer']")).click();
-        sleepInSeconds(1);
+        clickOnElement(By.xpath("//a[text()='Edit Customer']"));
 
-        driver.findElement(By.cssSelector("input[name='cusid']")).sendKeys(customerID);
-        driver.findElement(By.cssSelector("input[name='AccSubmit']")).click();
-        sleepInSeconds(1);
+        findVisibleElement(By.cssSelector("input[name='cusid']")).sendKeys(customerID);
+        clickOnElement(By.cssSelector("input[name='AccSubmit']"));
 
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Customer Name']/following-sibling::td/input")).getAttribute("value"),"Automation Testing");
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).getText(),"12 Ly Tu Trong");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Customer Name']/following-sibling::td/input")).getAttribute("value"),"Automation Testing");
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).getText(),"12 Ly Tu Trong");
 
-        driver.findElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).clear();
-        driver.findElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).sendKeys("12 Ly Tu Trong edited");
-        driver.findElement(By.cssSelector("input[name='city']")).clear();
-        driver.findElement(By.cssSelector("input[name='city']")).sendKeys("Da Nang edited");
-        driver.findElement(By.cssSelector("input[name='state']")).clear();
-        driver.findElement(By.cssSelector("input[name='state']")).sendKeys("Viet Nam edited");
-        driver.findElement(By.cssSelector("input[name='pinno']")).clear();
-        driver.findElement(By.cssSelector("input[name='pinno']")).sendKeys("654321");
-        driver.findElement(By.cssSelector("input[name='telephoneno']")).clear();
-        driver.findElement(By.cssSelector("input[name='telephoneno']")).sendKeys("0905654321");
+        findVisibleElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).clear();
+        findVisibleElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).sendKeys("12 Ly Tu Trong edited");
+        findVisibleElement(By.cssSelector("input[name='city']")).clear();
+        findVisibleElement(By.cssSelector("input[name='city']")).sendKeys("Da Nang edited");
+        findVisibleElement(By.cssSelector("input[name='state']")).clear();
+        findVisibleElement(By.cssSelector("input[name='state']")).sendKeys("Viet Nam edited");
+        findVisibleElement(By.cssSelector("input[name='pinno']")).clear();
+        findVisibleElement(By.cssSelector("input[name='pinno']")).sendKeys("654321");
+        findVisibleElement(By.cssSelector("input[name='telephoneno']")).clear();
+        findVisibleElement(By.cssSelector("input[name='telephoneno']")).sendKeys("0905654321");
         String emailEditCustomer = getEmailRandom();
-        driver.findElement(By.cssSelector("input[name='emailid']")).clear();
-        driver.findElement(By.cssSelector("input[name='emailid']")).sendKeys(emailEditCustomer);
-        driver.findElement(By.cssSelector("input[name='sub']")).click();
-        sleepInSeconds(1);
+        findVisibleElement(By.cssSelector("input[name='emailid']")).clear();
+        findVisibleElement(By.cssSelector("input[name='emailid']")).sendKeys(emailEditCustomer);
+        clickOnElement(By.cssSelector("input[name='sub']"));
 
-        WebDriverWait explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
         explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
-        sleepInSeconds(1);
 
-        driver.findElement(By.cssSelector("input[name='cusid']")).sendKeys(customerID);
-        driver.findElement(By.cssSelector("input[name='AccSubmit']")).click();
-        sleepInSeconds(1);
+        findVisibleElement(By.cssSelector("input[name='cusid']")).sendKeys(customerID);
+        clickOnElement(By.cssSelector("input[name='AccSubmit']"));
 
-        Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).getText(),"12 Ly Tu Trong edited");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='city']")).getAttribute("value"),"Da Nang edited");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='state']")).getAttribute("value"),"Viet Nam edited");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='pinno']")).getAttribute("value"),"654321");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='telephoneno']")).getAttribute("value"),"0905654321");
-        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='emailid']")).getAttribute("value"), emailEditCustomer);
+        Assert.assertEquals(findVisibleElement(By.xpath("//td[text()='Address']/following-sibling::td/textarea")).getText(),"12 Ly Tu Trong edited");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[name='city']")).getAttribute("value"),"Da Nang edited");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[name='state']")).getAttribute("value"),"Viet Nam edited");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[name='pinno']")).getAttribute("value"),"654321");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[name='telephoneno']")).getAttribute("value"),"0905654321");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("input[name='emailid']")).getAttribute("value"), emailEditCustomer);
     }
 
     @AfterClass

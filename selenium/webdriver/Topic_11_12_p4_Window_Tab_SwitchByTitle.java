@@ -13,48 +13,89 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.Set;
 
 public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
     WebDriver driver;
+    WebDriverWait explicitWait;
 
-    public void sleepInSeconds (long timeInSecond) {
+    public boolean isElementDisplayed(By locator) { // include wait for visibility
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        boolean status;
         try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            status = explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
+        } catch (Exception e) {
+            status = false;
         }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return status;
+        // visible --> status = true
+        // not visible but presence in DOM --> run until explicitWait end, throw out TimeOutException --> status = false
+        // not presence in DOM --> run until implicitWait end, throw out NoSuchElementException --> status = false
     }
 
-    public void jsClick(WebElement webElement) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", webElement);
+    public WebElement findVisibleElement(By locator) {
+        return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public void waitForInvisibility(By locator) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+    }
+
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void waitForPageLoad() {
+        boolean status = false;
+        while (!status) {
+            try {
+                explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
+                status = true;
+            } catch (Exception e) {
+                System.out.println(new Date());
+                System.out.println(e.getMessage());
+                System.out.println("Failed to wait for page load! Keep waiting ...\n");
+            }
+        }
     }
 
     public void switchToWindowByTitle(String windowTitle) {
         Set<String> allWindowHandles = driver.getWindowHandles();
         for (String windowHandle : allWindowHandles) {
             driver.switchTo().window(windowHandle);
+            waitForPageLoad();
             if (driver.getTitle().equals(windowTitle)) {
                 break;
             }
         }
     }
 
-    public void closeAllWindowsExceptTitle(String windowTitle) {
+    public void closeWindowsAndSwitchTo(String windowTitle) {
         Set<String> allWindowHandles = driver.getWindowHandles();
         for (String windowHandle : allWindowHandles) {
             driver.switchTo().window(windowHandle);
             if (!driver.getTitle().equals(windowTitle)) {
+                Set<String> currentWindowHandles = driver.getWindowHandles();
                 driver.close();
+                explicitWait.until(ExpectedConditions.numberOfWindowsToBe(currentWindowHandles.size() - 1));
             }
         }
+        String lastWindowHandle = driver.getWindowHandles().toArray(new String[0])[0];
+        driver.switchTo().window(lastWindowHandle);
     }
 
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     @Test
@@ -62,11 +103,8 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         driver.get("https://automationfc.github.io/basic-form/index.html");
 
         // Google
-        driver.findElement(By.xpath("//a[text()='GOOGLE']")).click();
-        sleepInSeconds(3);
-
+        clickOnElement(By.xpath("//a[text()='GOOGLE']"));
         switchToWindowByTitle("Google");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.google.com.vn/");
         Assert.assertEquals(driver.getTitle(), "Google");
@@ -74,11 +112,8 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         // Facebook
         switchToWindowByTitle("Selenium WebDriver");
 
-        driver.findElement(By.xpath("//a[text()='FACEBOOK']")).click();
-        sleepInSeconds(3);
-
+        clickOnElement(By.xpath("//a[text()='FACEBOOK']"));
         switchToWindowByTitle("Facebook – log in or sign up");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/");
         Assert.assertEquals(driver.getTitle(), "Facebook – log in or sign up");
@@ -86,19 +121,14 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         // Tiki
         switchToWindowByTitle("Selenium WebDriver");
 
-        driver.findElement(By.xpath("//a[text()='TIKI']")).click();
-        sleepInSeconds(3);
-
+        clickOnElement(By.xpath("//a[text()='TIKI']"));
         switchToWindowByTitle("Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://tiki.vn/");
         Assert.assertEquals(driver.getTitle(), "Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh");
 
         // close all except parent window/tab --> switch back to parent window/tab
-        closeAllWindowsExceptTitle("Selenium WebDriver");
-        switchToWindowByTitle("Selenium WebDriver");
-        sleepInSeconds(2);
+        closeWindowsAndSwitchTo("Selenium WebDriver");
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://automationfc.github.io/basic-form/index.html");
         Assert.assertEquals(driver.getTitle(), "Selenium WebDriver");
@@ -109,14 +139,11 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         driver.get("https://skills.kynaenglish.vn/");
 
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
-        sleepInSeconds(1);
 
         // Facebook
-        driver.findElement(By.cssSelector("div.hotline img[alt='facebook']")).click();
-        sleepInSeconds(5);
-
+        clickOnElement(By.cssSelector("div.hotline img[alt='facebook']"));
         switchToWindowByTitle("Kyna.vn | Ho Chi Minh City | Facebook");
-        sleepInSeconds(2);
+        findVisibleElement(By.cssSelector("form#login_popup_cta_form"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/kyna.vn");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn | Ho Chi Minh City | Facebook");
@@ -124,19 +151,14 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         // Youtube
         switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
 
-        driver.findElement(By.cssSelector("div.hotline img[alt='youtube']")).click();
-        sleepInSeconds(5);
-
+        clickOnElement(By.cssSelector("div.hotline img[alt='youtube']"));
         switchToWindowByTitle("Kyna.vn - YouTube");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.youtube.com/user/kynavn");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn - YouTube");
 
         // close all except parent window/tab --> switch back to parent window/tab
-        closeAllWindowsExceptTitle("Kyna.vn - Học online cùng chuyên gia");
-        switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
-        sleepInSeconds(2);
+        closeWindowsAndSwitchTo("Kyna.vn - Học online cùng chuyên gia");
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://skills.kynaenglish.vn/");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn - Học online cùng chuyên gia");
@@ -146,95 +168,79 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
     public void TC_15_Window_Tab() {
         driver.get("http://live.techpanda.org/");
 
-        driver.findElement(By.xpath("//a[text()='Mobile']")).click();
+        clickOnElement(By.xpath("//a[text()='Mobile']"));
 
-        driver.findElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']")).click();
-        sleepInSeconds(1);
+        clickOnElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
+        Assert.assertTrue(findVisibleElement(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
-        Assert.assertTrue(driver.findElement(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
+        clickOnElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
+        Assert.assertTrue(findVisibleElement(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
 
-        driver.findElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']")).click();
-        sleepInSeconds(1);
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
-        Assert.assertTrue(driver.findElement(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
-
-        driver.findElement(By.cssSelector("button[title='Compare']")).click();
-        sleepInSeconds(3);
-
+        clickOnElement(By.cssSelector("button[title='Compare']"));
         switchToWindowByTitle("Products Comparison List - Magento Commerce");
-        sleepInSeconds(2);
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/catalog/product_compare/index/");
         Assert.assertEquals(driver.getTitle(), "Products Comparison List - Magento Commerce");
-        Assert.assertEquals(driver.findElement(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
 
-        closeAllWindowsExceptTitle("Mobile");
-        switchToWindowByTitle("Mobile");
+        closeWindowsAndSwitchTo("Mobile");
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/mobile.html");
         Assert.assertEquals(driver.getTitle(), "Mobile");
 
-        driver.findElement(By.xpath("//a[text()='Clear All']")).click();
-        new WebDriverWait(driver, Duration.ofSeconds(30)).until(ExpectedConditions.alertIsPresent()).accept();
-        sleepInSeconds(1);
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(), "The comparison list was cleared.");
+        clickOnElement(By.xpath("//a[text()='Clear All']"));
+        explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
+        explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector("li.success-msg span"))));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The comparison list was cleared.");
     }
 
     @Test
     public void TC_16_Window_Tab() { // there is a not-in-DOM popup displayed randomly
         driver.get("https://dictionary.cambridge.org/vi/");
 
-        jsClick(driver.findElement(By.cssSelector("span.cdo-login-button span")));
-        sleepInSeconds(5);
+        while (isElementDisplayed(By.xpath("//div[contains(@class, 'surveyContainer')]"))) {
+            clickOnElement(By.xpath("//button[contains(@class, 'closeModalBtn')]"));
+        }
 
+        clickOnElement(By.cssSelector("span.cdo-login-button span"));
         switchToWindowByTitle("Login");
 
-        driver.findElement(By.cssSelector("input[value='Log in']")).click();
-        sleepInSeconds(1);
+        clickOnElement(By.cssSelector("input[value='Log in']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
+        closeWindowsAndSwitchTo("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
 
-        closeAllWindowsExceptTitle("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
-        switchToWindowByTitle("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
-
-        driver.findElement(By.cssSelector("input#searchword")).sendKeys("automation");
-        jsClick(driver.findElement(By.cssSelector("button.cdo-search-button")));
-        sleepInSeconds(1);
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
+        findVisibleElement(By.cssSelector("input#searchword")).sendKeys("automation");
+        clickOnElement(By.cssSelector("button.cdo-search-button"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
     }
 
     @Test
     public void TC_17_Window_Tab() { // close authentication popup before switch
         driver.get("https://courses.dce.harvard.edu/");
 
-        driver.findElement(By.cssSelector("div.banner__auth")).click();
+        clickOnElement(By.cssSelector("div.banner__auth"));
 
-        jsClick(driver.findElement(By.cssSelector("button.sam-wait__close")));
-        sleepInSeconds(5);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(By.cssSelector("button.sam-wait__close")));
+        waitForInvisibility(By.cssSelector("div#sam-wait"));
 
         switchToWindowByTitle("Harvard DCE Login Portal");
         driver.manage().window().maximize();
 
-        jsClick(driver.findElement(By.xpath("//div[text()='Log in with HarvardKey']")));
+        clickOnElement(By.xpath("//div[text()='Log in with HarvardKey']"));
+        clickOnElement(By.cssSelector("button.mdc-button--raised"));
+        String errMsg = findVisibleElement(By.cssSelector("div.login-status-message")).getText();
+        Assert.assertTrue(errMsg.contains("Password is a required field.") && errMsg.contains("Username is a required field."));
 
-        driver.findElement(By.cssSelector("button.mdc-button--raised")).click();
-        sleepInSeconds(1);
+        closeWindowsAndSwitchTo("DCE Course Search");
 
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.login-status-message")).getText(), "Password is a required field. Username is a required field.");
-
-        closeAllWindowsExceptTitle("DCE Course Search");
-        switchToWindowByTitle("DCE Course Search");
-
-        driver.findElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
-        driver.findElement(By.cssSelector("button#search-button")).click();
-        sleepInSeconds(3);
-
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.panel--kind-results h2")).getText(), "Search Results");
+        findVisibleElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
+        clickOnElement(By.cssSelector("button#search-button"));
+        waitForInvisibility(By.cssSelector("div.panel--kind-results.panel--busy"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.panel--kind-results h2")).getText(), "Search Results");
     }
 
     @AfterClass

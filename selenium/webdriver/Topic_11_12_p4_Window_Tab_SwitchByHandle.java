@@ -13,44 +13,79 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.Date;
 import java.util.Set;
 
 public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     WebDriver driver;
     WebDriverWait explicitWait;
 
-    public void sleepInSeconds (long timeInSecond) {
+    public boolean isElementDisplayed(By locator) { // include wait for visibility
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        boolean status;
         try {
-            Thread.sleep(timeInSecond*1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            status = explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
+        } catch (Exception e) {
+            status = false;
         }
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return status;
+        // visible --> status = true
+        // not visible but presence in DOM --> run until explicitWait end, throw out TimeOutException --> status = false
+        // not presence in DOM --> run until implicitWait end, throw out NoSuchElementException --> status = false
     }
 
-    public WebElement waitVisibilityOfElement(By locator) {
+    public WebElement findVisibleElement(By locator) {
         return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    public void clickAndSwitch(WebElement webElement) {
+    public void waitForInvisibility(By locator) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+    }
+
+    public void clickOnElement(By locator) {
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public void waitForPageLoad() {
+        boolean status = false;
+        while (!status) {
+            try {
+                explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
+                status = true;
+            } catch (Exception e) {
+                System.out.println(new Date());
+                System.out.println(e.getMessage());
+                System.out.println("Failed to wait for page load! Keep waiting ...\n");
+            }
+        }
+    }
+
+    public void switchToWindowByClickingElement(By locator) {
         Set<String> beforeHandles = driver.getWindowHandles();
-        webElement.click();
+        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
         explicitWait.until(ExpectedConditions.numberOfWindowsToBe(beforeHandles.size() + 1));
         Set<String> afterHandles = driver.getWindowHandles();
         for (String windowHandle : afterHandles) {
             if (!beforeHandles.contains(windowHandle)) {
                 driver.switchTo().window(windowHandle);
+                waitForPageLoad();
             }
         }
-        explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
     }
 
-    public void closeAllAndSwitch(String parentWindowHandle) {
+    public void closeWindowsAndSwitchTo(String parentWindowHandle) {
         Set<String> allWindowHandles = driver.getWindowHandles();
         for (String windowHandle : allWindowHandles) {
             if (!windowHandle.equals(parentWindowHandle)) {
+                Set<String> currentWindowHandles = driver.getWindowHandles();
                 driver.switchTo().window(windowHandle);
                 driver.close();
+                explicitWait.until(ExpectedConditions.numberOfWindowsToBe(currentWindowHandles.size() - 1));
             }
         }
         driver.switchTo().window(parentWindowHandle);
@@ -59,8 +94,8 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
@@ -70,7 +105,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         String parentWindowHandle = driver.getWindowHandle();
 
         // Google
-        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='GOOGLE']")));
+        switchToWindowByClickingElement(By.xpath("//a[text()='GOOGLE']"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.google.com.vn/");
         Assert.assertEquals(driver.getTitle(), "Google");
@@ -78,7 +113,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         // Facebook
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='FACEBOOK']")));
+        switchToWindowByClickingElement(By.xpath("//a[text()='FACEBOOK']"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/");
         Assert.assertEquals(driver.getTitle(), "Facebook – log in or sign up");
@@ -86,13 +121,13 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         // Tiki
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitVisibilityOfElement(By.xpath("//a[text()='TIKI']")));
+        switchToWindowByClickingElement(By.xpath("//a[text()='TIKI']"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://tiki.vn/");
         Assert.assertEquals(driver.getTitle(), "Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh");
 
         // close all except parent window/tab --> switch back to parent window/tab
-        closeAllAndSwitch(parentWindowHandle);
+        closeWindowsAndSwitchTo(parentWindowHandle);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://automationfc.github.io/basic-form/index.html");
         Assert.assertEquals(driver.getTitle(), "Selenium WebDriver");
@@ -106,22 +141,22 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
         // Facebook
-        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("div.hotline img[alt='facebook']")));
+        switchToWindowByClickingElement(By.cssSelector("div.hotline img[alt='facebook']"));
+        findVisibleElement(By.cssSelector("form#login_popup_cta_form"));
 
-        explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("form#login_popup_cta_form")));
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/kyna.vn");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn | Ho Chi Minh City | Facebook");
 
         // Youtube
         driver.switchTo().window(parentWindowHandle);
 
-        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("div.hotline img[alt='youtube']")));
+        switchToWindowByClickingElement(By.cssSelector("div.hotline img[alt='youtube']"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.youtube.com/user/kynavn");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn - YouTube");
 
         // close all except parent window/tab --> switch back to parent window/tab
-        closeAllAndSwitch(parentWindowHandle);
+        closeWindowsAndSwitchTo(parentWindowHandle);
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://skills.kynaenglish.vn/");
         Assert.assertEquals(driver.getTitle(), "Kyna.vn - Học online cùng chuyên gia");
@@ -132,62 +167,54 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         driver.get("http://live.techpanda.org/");
         String parentWindowHandle = driver.getWindowHandle();
 
-        waitVisibilityOfElement(By.xpath("//a[text()='Mobile']")).click();
+        clickOnElement(By.xpath("//a[text()='Mobile']"));
 
-        waitVisibilityOfElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']")).click();
+        clickOnElement(By.xpath("//a[text()='IPhone']/parent::h2/parent::div//a[@class='link-compare']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
+        Assert.assertTrue(findVisibleElement(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
 
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("li.success-msg span")).getText(), "The product IPhone has been added to comparison list.");
-        Assert.assertTrue(waitVisibilityOfElement(By.xpath("//ol[@id='compare-items']//a[text()='IPhone']")).isDisplayed());
+        clickOnElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
+        Assert.assertTrue(findVisibleElement(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
 
-        waitVisibilityOfElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/parent::div//a[@class='link-compare']")).click();
-
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("li.success-msg span")).getText(), "The product Sony Xperia has been added to comparison list.");
-        Assert.assertTrue(waitVisibilityOfElement(By.xpath("//ol[@id='compare-items']//a[text()='Sony Xperia']")).isDisplayed());
-
-        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("button[title='Compare']")));
+        switchToWindowByClickingElement(By.cssSelector("button[title='Compare']"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/catalog/product_compare/index/");
         Assert.assertEquals(driver.getTitle(), "Products Comparison List - Magento Commerce");
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("h1")).getText(), "COMPARE PRODUCTS");
 
-        closeAllAndSwitch(parentWindowHandle);
+        closeWindowsAndSwitchTo(parentWindowHandle);
 
         Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/mobile.html");
         Assert.assertEquals(driver.getTitle(), "Mobile");
 
-        waitVisibilityOfElement(By.xpath("//a[text()='Clear All']")).click();
-
+        clickOnElement(By.xpath("//a[text()='Clear All']"));
         explicitWait.until(ExpectedConditions.alertIsPresent()).accept();
-
         explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector("li.success-msg span"))));
-        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(), "The comparison list was cleared.");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("li.success-msg span")).getText(), "The comparison list was cleared.");
     }
 
     @Test
     public void TC_16_Window_Tab() { // there is a not-in-DOM popup displayed randomly
-        // driver.get("https://dictionary.cambridge.org/vi/");
-        ((JavascriptExecutor) driver).executeScript("window.location = 'https://dictionary.cambridge.org/vi/'");
-        sleepInSeconds(10);
+        driver.get("https://dictionary.cambridge.org/vi/");
+        // ((JavascriptExecutor) driver).executeScript("window.location = 'https://dictionary.cambridge.org/vi/'");
         String parentWindowHandle = driver.getWindowHandle();
 
-        List<WebElement> popup = driver.findElements(By.xpath("//div[contains(@class, 'surveyContainer')]"));
-        if (!popup.isEmpty() && popup.get(0).isDisplayed()) {
-            driver.findElement(By.xpath("//button[contains(@class, 'closeModalBtn')]")).click();
+        while (isElementDisplayed(By.xpath("//div[contains(@class, 'surveyContainer')]"))) {
+            clickOnElement(By.xpath("//button[contains(@class, 'closeModalBtn')]"));
         }
 
-        clickAndSwitch(waitVisibilityOfElement(By.cssSelector("span.cdo-login-button span")));
+        switchToWindowByClickingElement(By.cssSelector("span.cdo-login-button span"));
 
-        waitVisibilityOfElement(By.cssSelector("input[value='Log in']")).click();
+        findVisibleElement(By.cssSelector("input[value='Log in']")).click();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
 
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.gigya-composite-control-textbox>span.gigya-error-msg-active")).getText(), "This field is required");
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.gigya-composite-control-password>span.gigya-error-msg-active")).getText(), "This field is required");
+        closeWindowsAndSwitchTo(parentWindowHandle);
 
-        closeAllAndSwitch(parentWindowHandle);
-
-        waitVisibilityOfElement(By.cssSelector("input#searchword")).sendKeys("automation");
-        waitVisibilityOfElement(By.cssSelector("button.cdo-search-button")).click();
-
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
+        findVisibleElement(By.cssSelector("input#searchword")).sendKeys("automation");
+        findVisibleElement(By.cssSelector("button.cdo-search-button")).click();
+        Assert.assertEquals(findVisibleElement(By.cssSelector("article#page-content h1")).getText(), "Ý nghĩa của automation trong tiếng Anh");
     }
 
     @Test
@@ -195,11 +222,11 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
         driver.get("https://courses.dce.harvard.edu/");
         String parentWindowHandle = driver.getWindowHandle();
 
-        waitVisibilityOfElement(By.cssSelector("div.banner__auth")).click();
+        clickOnElement(By.cssSelector("div.banner__auth"));
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", waitVisibilityOfElement(By.cssSelector("button.sam-wait__close")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(By.cssSelector("button.sam-wait__close")));
+        waitForInvisibility(By.cssSelector("div#sam-wait"));
 
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div#sam-wait")));
         Set<String> allWindowHandles = driver.getWindowHandles();
         for (String windowHandle : allWindowHandles) {
             if (!windowHandle.equals(parentWindowHandle)) {
@@ -208,19 +235,17 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
             }
         }
 
-        waitVisibilityOfElement(By.xpath("//div[text()='Log in with HarvardKey']")).click();
+        clickOnElement(By.xpath("//div[text()='Log in with HarvardKey']"));
+        clickOnElement(By.cssSelector("button.mdc-button--raised"));
+        String errMsg = findVisibleElement(By.cssSelector("div.login-status-message")).getText();
+        Assert.assertTrue(errMsg.contains("Password is a required field.") && errMsg.contains("Username is a required field."));
 
-        waitVisibilityOfElement(By.cssSelector("button.mdc-button--raised")).click();
+        closeWindowsAndSwitchTo(parentWindowHandle);
 
-        Assert.assertEquals(waitVisibilityOfElement(By.cssSelector("div.login-status-message")).getText(), "Password is a required field. Username is a required field.");
-
-        closeAllAndSwitch(parentWindowHandle);
-
-        waitVisibilityOfElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
-        waitVisibilityOfElement(By.cssSelector("button#search-button")).click();
-
-        explicitWait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector("div.panel--kind-results h2"))));
-        Assert.assertEquals(driver.findElement(By.cssSelector("div.panel--kind-results h2")).getText(), "Search Results");
+        findVisibleElement(By.cssSelector("input#crit-keyword")).sendKeys("law");
+        clickOnElement(By.cssSelector("button#search-button"));
+        waitForInvisibility(By.cssSelector("div.panel--kind-results.panel--busy"));
+        Assert.assertEquals(findVisibleElement(By.cssSelector("div.panel--kind-results h2")).getText(), "Search Results");
     }
 
     @AfterClass
