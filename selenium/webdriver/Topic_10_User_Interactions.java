@@ -28,6 +28,7 @@ public class Topic_10_User_Interactions {
     WebDriver driver;
     Actions actions;
     Keys cmdCtrl = Platform.getCurrent().is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
+
     public void sleepInSeconds (long timeInSecond) {
         try {
             Thread.sleep(timeInSecond*1000);
@@ -39,9 +40,9 @@ public class Topic_10_User_Interactions {
     @BeforeClass
     public void beforeClass() {
         driver = new FirefoxDriver();
-        actions = new Actions(driver);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        actions = new Actions(driver);
     }
 
     @Test

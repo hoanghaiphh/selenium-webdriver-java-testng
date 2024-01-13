@@ -15,7 +15,7 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.time.Duration;
 
-public class Topic_10X_DragDrop_HTML5_Offset {
+public class Topic_10X_HTML5_DragDrop_By_Robot {
     WebDriver driver;
 
     public void sleepInSeconds (long timeInSecond) {

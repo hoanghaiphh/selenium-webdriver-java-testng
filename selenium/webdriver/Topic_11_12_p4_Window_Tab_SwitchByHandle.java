@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -15,10 +16,12 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     WebDriver driver;
     WebDriverWait explicitWait;
+    FluentWait<WebDriver> fluentDriver;
 
     public boolean isElementDisplayed(By locator) { // include wait for visibility
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -52,7 +55,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
     }
 
     public void waitForPageLoad() {
-        boolean status = false;
+        /*boolean status = false;
         while (!status) {
             try {
                 explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
@@ -62,7 +65,16 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
                 System.out.println(e.getMessage());
                 System.out.println("Failed to wait for page load! Keep waiting ...\n");
             }
-        }
+        }*/
+        fluentDriver = new FluentWait<WebDriver>(driver);
+        fluentDriver.withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofMillis(500))
+                .ignoring(NullPointerException.class)
+                .until(new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver webDriver) {
+                        return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+                    }
+                });
     }
 
     public void switchToWindowByClickingElement(By locator) {
