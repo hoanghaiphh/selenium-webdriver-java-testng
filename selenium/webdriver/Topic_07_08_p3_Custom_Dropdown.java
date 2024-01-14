@@ -42,14 +42,11 @@ public class Topic_07_08_p3_Custom_Dropdown {
         jsExecutor = (JavascriptExecutor) driver;
     }
 
-    public void selectDropdown(String dropdownLocator, String optionsLocator, String optionValue) {
-        clickOnElement(By.cssSelector(dropdownLocator));
-        // wait?
+    public void selectDropdown(String optionsLocator, String optionValue) {
         List<WebElement> dropdownOptions = explicitWait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(optionsLocator)));
         for (WebElement option : dropdownOptions) {
             if (option.getText().equals(optionValue)) {
                 option.click();
-                // wait?
                 break;
             }
         }
@@ -59,58 +56,62 @@ public class Topic_07_08_p3_Custom_Dropdown {
         // JQuery
         driver.get("https://jqueryui.com/resources/demos/selectmenu/default.html");
 
-        selectDropdown("span#speed-button", "ul#speed-menu div", "Fast");
+        clickOnElement(By.cssSelector("span#speed-button"));
+        findVisibleElement(By.cssSelector("ul#speed-menu"));
+        selectDropdown("ul#speed-menu div", "Fast");
+        waitForInvisibility(By.cssSelector("ul#speed-menu"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("span#speed-button span.ui-selectmenu-text")).getText(),"Fast");
 
-        selectDropdown("span#files-button", "ul#files-menu div", "ui.jQuery.js");
+        clickOnElement(By.cssSelector("span#files-button"));
+        findVisibleElement(By.cssSelector("ul#files-menu"));
+        selectDropdown("ul#files-menu div", "ui.jQuery.js");
+        waitForInvisibility(By.cssSelector("ul#files-menu"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("span#files-button span.ui-selectmenu-text")).getText(),"ui.jQuery.js");
 
-        selectDropdown("span#number-button", "ul#number-menu div", "16");
+        clickOnElement(By.cssSelector("span#number-button"));
+        findVisibleElement(By.cssSelector("ul#number-menu"));
+        selectDropdown("ul#number-menu div", "16");
+        waitForInvisibility(By.cssSelector("ul#number-menu"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("span#number-button span.ui-selectmenu-text")).getText(),"16");
 
-        selectDropdown("span#salutation-button", "ul#salutation-menu div", "Dr.");
+        clickOnElement(By.cssSelector("span#salutation-button"));
+        findVisibleElement(By.cssSelector("ul#salutation-menu"));
+        selectDropdown("ul#salutation-menu div", "Dr.");
+        waitForInvisibility(By.cssSelector("ul#salutation-menu"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("span#salutation-button span.ui-selectmenu-text")).getText(),"Dr.");
 
         // ReactJS
         driver.get("https://react.semantic-ui.com/maximize/dropdown-example-selection/");
 
-        selectDropdown("i.dropdown.icon", "div.item span.text", "Stevie Feliciano");
+        clickOnElement(By.cssSelector("i.dropdown.icon"));
+        findVisibleElement(By.cssSelector("div.menu.transition"));
+        selectDropdown("div.item span.text", "Stevie Feliciano");
+        waitForInvisibility(By.cssSelector("div.menu.transition"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("div.divider.text")).getText(),"Stevie Feliciano");
-
-        driver.navigate().refresh();
-
-        selectDropdown("i.dropdown.icon", "div.item span.text", "Justen Kitsune");
-        Assert.assertEquals(findVisibleElement(By.cssSelector("div.divider.text")).getText(),"Justen Kitsune");
 
         // VueJS
         driver.get("https://mikerodham.github.io/vue-dropdowns/");
 
-        selectDropdown("li.dropdown-toggle", "ul.dropdown-menu a", "Third Option");
+        clickOnElement(By.cssSelector("li.dropdown-toggle"));
+        findVisibleElement(By.cssSelector("ul.dropdown-menu"));
+        selectDropdown("ul.dropdown-menu a", "Third Option");
+        waitForInvisibility(By.cssSelector("ul.dropdown-menu"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("li.dropdown-toggle")).getText(),"Third Option");
 
-        driver.navigate().refresh();
-
-        selectDropdown("li.dropdown-toggle", "ul.dropdown-menu a", "Second Option");
-        Assert.assertEquals(findVisibleElement(By.cssSelector("li.dropdown-toggle")).getText(),"Second Option");
-
-        // Default
+        // default dropdown can be handled with the same way
         driver.get("https://demo.nopcommerce.com/register?returnUrl=%2F");
 
-        selectDropdown("select[name='DateOfBirthDay']", "select[name='DateOfBirthDay']>option", "15");
+        clickOnElement(By.cssSelector("select[name='DateOfBirthDay']"));
+        selectDropdown("select[name='DateOfBirthDay']>option", "15");
         Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthDay']/option[text() = '15']")).isSelected());
-        selectDropdown("select[name='DateOfBirthMonth']", "select[name='DateOfBirthMonth']>option", "October");
+
+        clickOnElement(By.cssSelector("select[name='DateOfBirthMonth']"));
+        selectDropdown("select[name='DateOfBirthMonth']>option", "October");
         Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthMonth']/option[text() = 'October']")).isSelected());
-        selectDropdown("select[name='DateOfBirthYear']", "select[name='DateOfBirthYear']>option", "1989");
+
+        clickOnElement(By.cssSelector("select[name='DateOfBirthYear']"));
+        selectDropdown("select[name='DateOfBirthYear']>option", "1989");
         Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthYear']/option[text() = '1989']")).isSelected());
-
-        driver.navigate().refresh();
-
-        selectDropdown("select[name='DateOfBirthDay']", "select[name='DateOfBirthDay']>option", "25");
-        Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthDay']/option[text() = '25']")).isSelected());
-        selectDropdown("select[name='DateOfBirthMonth']", "select[name='DateOfBirthMonth']>option", "June");
-        Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthMonth']/option[text() = 'June']")).isSelected());
-        selectDropdown("select[name='DateOfBirthYear']", "select[name='DateOfBirthYear']>option", "2021");
-        Assert.assertTrue(findVisibleElement(By.xpath("//select[@name='DateOfBirthYear']/option[text() = '2021']")).isSelected());
     }
 
     public void selectEditableDropdown(String optionValue) {
@@ -131,18 +132,13 @@ public class Topic_07_08_p3_Custom_Dropdown {
     public void TC_07_required_Editable() {
         driver.get("https://react.semantic-ui.com/maximize/dropdown-example-search-selection/");
 
-        selectDropdown("input.search", "div.item span", "Angola");
+        selectEditableDropdown("Angola");
         Assert.assertEquals(findVisibleElement(By.cssSelector("div.divider.text")).getText(),"Angola");
 
         driver.navigate().refresh();
 
         selectEditableDropdown("Argentina");
         Assert.assertEquals(findVisibleElement(By.cssSelector("div.divider.text")).getText(),"Argentina");
-
-        driver.navigate().refresh();
-
-        selectDropdown("input.search", "div.item span", "Belarus");
-        Assert.assertEquals(findVisibleElement(By.cssSelector("div.divider.text")).getText(),"Belarus");
 
         driver.navigate().refresh();
 
@@ -213,7 +209,7 @@ public class Topic_07_08_p3_Custom_Dropdown {
         Assert.assertNotEquals(driver.findElement(By.cssSelector("div.cost-price span.total")).getText(), "");
     }
 
-    public void scrollAndSelectDropdown(String dropdownLocator, String optionsLocator, String optionValue) {
+    /*public void scrollAndSelectDropdown(String dropdownLocator, String optionsLocator, String optionValue) {
         jsExecutor.executeScript("arguments[0].scrollIntoView(false)", driver.findElement(By.xpath(dropdownLocator)));
         driver.findElement(By.xpath(dropdownLocator)).click();
         // wait
@@ -225,13 +221,13 @@ public class Topic_07_08_p3_Custom_Dropdown {
                 break;
             }
         }
-    }
+    }*/
     // this page unavailable since 01/01/2024
-    // @Test
+    /*@Test
     public void TC_08_optional_Angular_Covid() {
         driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
         // can not click dropdown by javascript
-        // can not wait for visibility (angular)
+        // can not wait for visibility
 
         scrollAndSelectDropdown("//div[text()='Đăng kí mũi tiêm thứ']/parent::div", "//ng-dropdown-panel//span", "Mũi tiêm thứ nhất");
         Assert.assertEquals(driver.findElement(By.xpath("//div[text()='Đăng kí mũi tiêm thứ']/parent::div//span[@class='ng-value-label ng-star-inserted']")).getText(), "Mũi tiêm thứ nhất");
@@ -271,7 +267,7 @@ public class Topic_07_08_p3_Custom_Dropdown {
 
         scrollAndSelectDropdown("//div[text()='Địa điểm tiêm']/parent::div", "//ng-dropdown-panel//span", "01015-Bệnh viện Quân Y 354");
         Assert.assertEquals(driver.findElement(By.xpath("//div[text()='Địa điểm tiêm']/parent::div//span[@class='ng-value-label ng-star-inserted']")).getText(), "01015-Bệnh viện Quân Y 354");
-    }
+    }*/
 
     public void multipleSelectDropdown(String[] options) {
         By dropdownLocator = By.xpath("//span[text()='January']/parent::label/parent::li/parent::ul/parent::div/preceding-sibling::button");

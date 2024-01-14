@@ -155,7 +155,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByTitle {
         // Facebook
         clickOnElement(By.cssSelector("div.hotline img[alt='facebook']"));
         // page load finish --> title: Kyna.vn | Ho Chi Minh City --> login form displayed --> title: Kyna.vn | Ho Chi Minh City | Facebook
-        switchToWindowByTitle("Kyna.vn | Ho Chi Minh City | Facebook");
+        switchToWindowByTitle("Kyna.vn | Ho Chi Minh City | Facebook"); // abcxyz
         findVisibleElement(By.cssSelector("form#login_popup_cta_form"));
 
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.facebook.com/kyna.vn");

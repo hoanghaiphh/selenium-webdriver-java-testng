@@ -41,7 +41,6 @@ public class Topic_09_p1_Button {
         String btnColor = Color.fromString(loginBtn.getCssValue("background-color")).asHex();
         Assert.assertFalse(loginBtn.isEnabled());
         Assert.assertEquals(btnColor.toUpperCase(), "#000000");
-        System.out.println("Color of Login Button (Disable):\t" + btnColor.toUpperCase());
 
         findVisibleElement(By.cssSelector("input#login_username")).sendKeys("automation@gmail.com");
         findVisibleElement(By.cssSelector("input#login_password")).sendKeys("Abcd@1234");
@@ -50,7 +49,6 @@ public class Topic_09_p1_Button {
         btnColor = Color.fromString(loginBtn.getCssValue("background-color")).asHex();
         Assert.assertTrue(loginBtn.isEnabled());
         Assert.assertEquals(btnColor.toUpperCase(), "#C92127");
-        System.out.println("Color of Login Button (Enable):\t\t" + btnColor.toUpperCase());
     }
 
     @Test

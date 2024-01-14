@@ -95,15 +95,10 @@ public class Topic_07_08_p2_Default_Dropdown {
 
         Select verifyYear = new Select(findVisibleElement(By.cssSelector("select[name='DateOfBirthYear']")));
         Assert.assertEquals(verifyYear.getFirstSelectedOption().getText(),"1980");
-
-        System.out.println("User Information:\n");
-        System.out.println("User Name:\t\t " + firstName + " " + lastName);
-        System.out.println("Date Of Birth:\t " + verifyDay.getFirstSelectedOption().getText() + " " + verifyMonth.getFirstSelectedOption().getText() + " " +verifyYear.getFirstSelectedOption().getText());
-        System.out.println("Email:\t\t\t " + email);
     }
 
     // 404 - Page not found
-    // @Test
+    /*@Test
     public void TC_06_Default_Dropdown() {
         driver.get("https://applitools.com/automating-tests-chrome-devtools-recorder-webinar/");
 
@@ -142,7 +137,7 @@ public class Topic_07_08_p2_Default_Dropdown {
         }
         clickOnElement(By.xpath("//button[text()='REGISTER NOW']"));
         Assert.assertEquals(findVisibleElement(By.cssSelector("div.mktoErrorMsg")).getText(),"This field is required.");
-    }
+    }*/
 
     @AfterClass
     public void afterClass() {

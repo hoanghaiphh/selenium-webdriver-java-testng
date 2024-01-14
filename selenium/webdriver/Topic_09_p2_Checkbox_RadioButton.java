@@ -23,20 +23,16 @@ public class Topic_09_p2_Checkbox_RadioButton {
         return explicitWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    public void clickOnElement(By locator) {
-        explicitWait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-    }
-
     public void selectOrDeselectCheckbox(By checkboxLocator, Boolean expectedStatus) {
         if (findVisibleElement(checkboxLocator).isSelected() != expectedStatus) {
-            clickOnElement(checkboxLocator);
+            explicitWait.until(ExpectedConditions.elementToBeClickable(checkboxLocator)).click();
             explicitWait.until(ExpectedConditions.elementSelectionStateToBe(checkboxLocator, expectedStatus));
         }
     }
 
     public void selectRadioBtn(By radioLocator) {
         if (!findVisibleElement(radioLocator).isSelected()) {
-            clickOnElement(radioLocator);
+            explicitWait.until(ExpectedConditions.elementToBeClickable(radioLocator)).click();
             explicitWait.until(ExpectedConditions.elementToBeSelected(radioLocator));
         }
     }
@@ -156,7 +152,7 @@ public class Topic_09_p2_Checkbox_RadioButton {
     }
 
     // this page unavailable since 01/01/2024
-    // @Test
+    /*@Test
     public void TC_05_Custom_jsClick() {
         driver.get("https://tiemchungcovid19.gov.vn/portal/register-person");
 
@@ -164,7 +160,7 @@ public class Topic_09_p2_Checkbox_RadioButton {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()", driver.findElement(radioLocator));
         explicitWait.until(ExpectedConditions.elementToBeSelected(radioLocator));
         Assert.assertTrue(driver.findElement(radioLocator).isSelected());
-    }
+    }*/
 
     @Test
     public void TC_06_Custom_GoogleDocs() {
@@ -207,7 +203,7 @@ public class Topic_09_p2_Checkbox_RadioButton {
             }
         }
 
-        clickOnElement(By.xpath("//span[text()='Gửi']"));
+        explicitWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Gửi']"))).click();
         Assert.assertTrue(findVisibleElement(By.xpath("//div[text()='Câu trả lời của bạn đã được ghi lại.']")).isDisplayed());
     }
 

@@ -56,7 +56,7 @@ public class Topic_11_12_p2_Shadow_DOM {
     }
 
     // this page auto navigated to login page while running by automation software
-    // @Test
+    /*@Test
     public void TC_09_Shadow_DOM_Popup() {
         // before close --> in DOM | after close --> not in DOM
 
@@ -76,7 +76,7 @@ public class Topic_11_12_p2_Shadow_DOM {
         driver.findElement(By.cssSelector("input.shopee-searchbar-input__input")).sendKeys("Iphone 15 Pro Max");
         driver.findElement(By.cssSelector("button.shopee-searchbar__search-button")).click();
         sleepInSeconds(2);
-    }
+    }*/
 
     @AfterClass
     public void afterClass() {
