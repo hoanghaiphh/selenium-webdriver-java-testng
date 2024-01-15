@@ -1,11 +1,9 @@
 package webdriver;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -15,6 +13,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Function;
 
 public class Topic_15_16_WebDriver_Wait {
     WebDriver driver;
@@ -150,6 +149,126 @@ public class Topic_15_16_WebDriver_Wait {
                 Assert.assertTrue(findVisibleElement(By.xpath("//span[text()='" + fileName + "']/parent::a/parent::div/following-sibling::div/button/span[text()='Play']")).isDisplayed());
             }
         }
+    }
+
+    @Test
+    public void TC_08a_Fluent_Wait() {
+        driver.get("https://automationfc.github.io/fluent-wait/");
+
+        // use FluentWait<WebDriver>
+        FluentWait<WebDriver> fluentDriver = new FluentWait<WebDriver>(driver);
+
+        // wait for countdown visible
+        fluentDriver.withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofMillis(500)).ignoring(NoSuchElementException.class)
+                .until(new Function<WebDriver, Boolean>() { // implement methods >> apply(t:T):R
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        return driver.findElement(By.cssSelector("div#javascript_countdown_time")).isDisplayed();
+                    }
+                });
+
+        // wait for second = 00
+        fluentDriver.withTimeout(Duration.ofSeconds(15)).pollingEvery(Duration.ofMillis(100)).ignoring(NoSuchElementException.class)
+                .until(new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        System.out.println(driver.findElement(By.cssSelector("div#javascript_countdown_time")).getText());
+                        return driver.findElement(By.cssSelector("div#javascript_countdown_time")).getText().endsWith("00");
+                    }
+                });
+    }
+    @Test
+    public void TC_08b_Fluent_Wait() {
+        driver.get("https://automationfc.github.io/fluent-wait/");
+
+        // use FluentWait<WebElement>
+        WebElement countdownTime = new FluentWait<WebDriver>(driver)
+                .withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofMillis(500)).ignoring(NoSuchElementException.class)
+                .until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        return driver.findElement(By.cssSelector("div#javascript_countdown_time"));
+                    }
+                });
+        /*- in case element always in DOM: above step is not necessary
+        - in case element not in DOM: need above step to find element, if not --> throw NoSuchElementException immediately when run FluentWait<WebElement>(...)*/
+        FluentWait<WebElement> fluentElement = new FluentWait<WebElement>(countdownTime)
+                .withTimeout(Duration.ofSeconds(15)).pollingEvery(Duration.ofMillis(100)).ignoring(NoSuchElementException.class);
+
+        // wait for countdown visible
+        fluentElement.until(new Function<WebElement, Boolean>() {
+            @Override
+            public Boolean apply(WebElement webElement) {
+                return webElement.isDisplayed();
+            }
+        });
+
+        // wait for second = 00
+        fluentElement.until(new Function<WebElement, Boolean>() {
+            @Override
+            public Boolean apply(WebElement webElement) {
+                System.out.println(webElement.getText());
+                return webElement.getText().endsWith("00");
+            }
+        });
+    }
+
+    private long waitTimeout = 30; // in seconds
+    private long waitPolling = 100; // in milliseconds
+    @Test
+    public void TC_09a_Fluent_Wait() {
+        driver.get("https://automationfc.github.io/dynamic-loading/");
+
+        FluentWait<WebDriver> fluentDriver = new FluentWait<WebDriver>(driver)
+                .withTimeout(Duration.ofSeconds(waitTimeout)).pollingEvery(Duration.ofMillis(waitPolling)).ignoring(NoSuchElementException.class);
+
+        // click Start button
+        fluentDriver.until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(By.cssSelector("div#start>button"));
+            }
+        }).click();
+
+        // wait Hello World text displayed by FluentWait<WebDriver>
+        fluentDriver.until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return driver.findElement(By.cssSelector("div#finish")).isDisplayed();
+            }
+        });
+    }
+    @Test
+    public void TC_09b_Fluent_Wait() {
+        driver.get("https://automationfc.github.io/dynamic-loading/");
+
+        FluentWait<WebDriver> fluentDriver = new FluentWait<WebDriver>(driver)
+                .withTimeout(Duration.ofSeconds(waitTimeout)).pollingEvery(Duration.ofMillis(waitPolling)).ignoring(NoSuchElementException.class);
+
+        // click Start button
+        fluentDriver.until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(By.cssSelector("div#start>button"));
+            }
+        }).click();
+
+        // wait Hello World text displayed by FluentWait<WebElement>
+        WebElement text = fluentDriver.until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(By.cssSelector("div#finish"));
+            }
+        });
+        // can not use FluentWait<WebElement>(...) without above step because element still not present in DOM --> throw NoSuchElementException immediately
+        new FluentWait<WebElement>(text)
+                .withTimeout(Duration.ofSeconds(waitTimeout)).pollingEvery(Duration.ofMillis(waitPolling)).ignoring(NoSuchElementException.class)
+                .until(new Function<WebElement, Boolean>() {
+                    @Override
+                    public Boolean apply(WebElement webElement) {
+                        return webElement.isDisplayed();
+                    }
+                });
     }
 
     @Test
