@@ -249,14 +249,16 @@ public class Topic_07_08_p1_Textbox_TextArea {
     }
 
     public boolean isAlertPresent() {
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        boolean status;
         try {
-            explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
             explicitWait.until(ExpectedConditions.alertIsPresent());
-            explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
-            return true;
+            status = true;
         } catch (Exception e) {
-            return false;
+            status = false;
         }
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return status;
     }
     @Test
     public void TC_03_guru99() {

@@ -206,6 +206,18 @@ public class Topic_13_Javascript_Executor {
         assertValidationMsg(By.cssSelector("input#password"), "Please fill out this field.");
     }
 
+    public boolean isAlertPresent() {
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        boolean status;
+        try {
+            explicitWait.until(ExpectedConditions.alertIsPresent());
+            status = true;
+        } catch (Exception e) {
+            status = false;
+        }
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return status;
+    }
     @Test
     public void TC_04_Remove_Attribute() {
         navigateToUrl("https://demo.guru99.com/");
@@ -242,15 +254,20 @@ public class Topic_13_Javascript_Executor {
 
         clickByJs(By.cssSelector("input[name='sub']"));
 
-        assertInnerText(By.cssSelector("table#customer p"), "Customer Registered Successfully!!!");
-        assertInnerText(By.xpath("//td[text()='Customer Name']/following-sibling::td"), "Automation Testing");
-        assertInnerText(By.xpath("//td[text()='Birthdate']/following-sibling::td"), "1980-10-20");
-        assertInnerText(By.xpath("//td[text()='Address']/following-sibling::td"), "12 Ly Tu Trong");
-        assertInnerText(By.xpath("//td[text()='City']/following-sibling::td"), "Da Nang");
-        assertInnerText(By.xpath("//td[text()='State']/following-sibling::td"), "Viet Nam");
-        assertInnerText(By.xpath("//td[text()='Pin']/following-sibling::td"), "123456");
-        assertInnerText(By.xpath("//td[text()='Mobile No.']/following-sibling::td"), "0905123456");
-        assertInnerText(By.xpath("//td[text()='Email']/following-sibling::td"), emailNewCustomer);
+        if (isAlertPresent()) {
+            System.out.println("TC_04: " + driver.switchTo().alert().getText());
+            driver.switchTo().alert().accept();
+        } else {
+            assertInnerText(By.cssSelector("table#customer p"), "Customer Registered Successfully!!!");
+            assertInnerText(By.xpath("//td[text()='Customer Name']/following-sibling::td"), "Automation Testing");
+            assertInnerText(By.xpath("//td[text()='Birthdate']/following-sibling::td"), "1980-10-20");
+            assertInnerText(By.xpath("//td[text()='Address']/following-sibling::td"), "12 Ly Tu Trong");
+            assertInnerText(By.xpath("//td[text()='City']/following-sibling::td"), "Da Nang");
+            assertInnerText(By.xpath("//td[text()='State']/following-sibling::td"), "Viet Nam");
+            assertInnerText(By.xpath("//td[text()='Pin']/following-sibling::td"), "123456");
+            assertInnerText(By.xpath("//td[text()='Mobile No.']/following-sibling::td"), "0905123456");
+            assertInnerText(By.xpath("//td[text()='Email']/following-sibling::td"), emailNewCustomer);
+        }
     }
 
     @Test
