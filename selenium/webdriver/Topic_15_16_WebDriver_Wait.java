@@ -2,6 +2,7 @@ package webdriver;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,23 @@ import java.util.function.Function;
 public class Topic_15_16_WebDriver_Wait {
     WebDriver driver;
     WebDriverWait explicitWait;
+
+    public void waitForPageLoad() {
+        ExpectedCondition<Boolean> jsReadyState = new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete");
+            }
+        };
+        ExpectedCondition<Boolean> jQueryLoad = new ExpectedCondition<Boolean>() {
+            // only work on page using jQuery
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return (Boolean) ((JavascriptExecutor) driver).executeScript("return (window.jQuery != null) && (jQuery.active === 0);");
+            }
+        };
+        explicitWait.until(ExpectedConditions.and(jsReadyState, jQueryLoad));
+    }
 
     public void sleepInSeconds (long timeInSecond) {
         try {
@@ -272,10 +290,9 @@ public class Topic_15_16_WebDriver_Wait {
     }
 
     @Test
-    public void TC_10_Page_Ready() {
+    public void TC_10a_Page_Ready() {
         driver.get("https://admin-demo.nopcommerce.com");
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         findVisibleElement(By.cssSelector("input#Email")).clear();
@@ -284,11 +301,35 @@ public class Topic_15_16_WebDriver_Wait {
         findVisibleElement(By.cssSelector("input#Password")).sendKeys("admin");
         clickOnElement(By.cssSelector("button.login-button"));
 
+        // should use SLEEP after login step instead of WAIT
+        // page load >> ajax icon display >> ajax icon disappear: if WAIT run when ajax still not displayed --> FAIL
+
         waitForInvisibility(By.cssSelector("div#ajaxBusy"));
 
         clickOnElement(By.xpath("//a[text()='Logout']"));
 
-        explicitWait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
+        waitForPageLoad();
+
+        Assert.assertEquals(driver.getTitle(), "Your store. Login");
+    }
+
+    @Test
+    public void TC_10b_Page_Ready() {
+        driver.get("https://admin-demo.nopcommerce.com");
+
+        explicitWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        findVisibleElement(By.cssSelector("input#Email")).clear();
+        findVisibleElement(By.cssSelector("input#Email")).sendKeys("admin@yourstore.com");
+        findVisibleElement(By.cssSelector("input#Password")).clear();
+        findVisibleElement(By.cssSelector("input#Password")).sendKeys("admin");
+        clickOnElement(By.cssSelector("button.login-button"));
+
+        waitForPageLoad(); // in some cases this will not work (jQueryLoad always return true) --> need to wait for ajax invisible
+
+        clickOnElement(By.xpath("//a[text()='Logout']"));
+
+        waitForPageLoad();
 
         Assert.assertEquals(driver.getTitle(), "Your store. Login");
     }

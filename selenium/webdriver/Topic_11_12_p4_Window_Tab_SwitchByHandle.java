@@ -71,7 +71,7 @@ public class Topic_11_12_p4_Window_Tab_SwitchByHandle {
                 .ignoring(NullPointerException.class)
                 .until(new Function<WebDriver, Boolean>() {
                     @Override
-                    public Boolean apply(WebDriver webDriver) {
+                    public Boolean apply(WebDriver driver) {
                         return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
                     }
                 });
