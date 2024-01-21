@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Selenium WebDriver">
+    <test verbose="2" preserve-order="true"
+          name="Run on Firefox browser">
+        <classes>
+            <class name="webdriver.Template">
+                <methods>
+                    <include name="TC_01_"/>
+                    <include name="TC_02_"/>
+                </methods>
+            </class>
+            <class name="webdriver.Topic_00_Selenium_Locator">
+                <methods>
+                    <include name="Vid_11_Selenium_Locator"/>
+                    <include name="Vid_12_Relative_Locator"/>
+                    <include name="Vid_14_Selenium_Text"/>
+                </methods>
+            </class>
+            <class name="java_basic.Java_Array">
+                <methods>
+                    <include name="TC_01_Array"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
