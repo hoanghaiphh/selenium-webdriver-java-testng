@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Selenium WebDriver">
+<suite name="TestNG">
     <test verbose="2" preserve-order="true"
           name="Run on Firefox browser">
-        <classes>
-            <class name="webdriver.Template">
-                <methods>
-                    <include name="TC_01_"/>
-                    <include name="TC_02_"/>
-                </methods>
-            </class>
-            <class name="testng.TestNG_Annotations">
-                <methods>
-                    <include name="TC_01"/>
-                    <include name="TC_02"/>
-                </methods>
-            </class>
-            <class name="java_basic.Java_Array">
-                <methods>
-                    <include name="TC_01_Array"/>
-                </methods>
-            </class>
-        </classes>
+
+        <groups>
+            <run>
+                <include name="feature_01"/>
+                <include name="feature_02"/>
+            </run>
+        </groups>
+
+        <packages>
+            <package name="package_01"/>
+            <package name="package_02"/>
+            <package name="package_03"/>
+        </packages>
+
+        <!--<classes>
+            <class name="package_01.package_01_class_01"/>
+            <class name="package_02.package_02_class_01"/>
+            <class name="package_02.package_02_class_02"/>
+            <class name="package_03.package_03_class_01"/>
+            <class name="package_03.package_03_class_02"/>
+            <class name="package_03.package_03_class_03"/>
+        </classes>-->
+
     </test>
 </suite>
