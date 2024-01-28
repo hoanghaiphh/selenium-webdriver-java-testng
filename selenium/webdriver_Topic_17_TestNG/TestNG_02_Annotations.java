@@ -1,8 +1,8 @@
-package testng;
+package webdriver_Topic_17_TestNG;
 
 import org.testng.annotations.*;
 
-public class TestNG_Annotations {
+public class TestNG_02_Annotations {
 
     @BeforeClass
     public void beforeClass() {

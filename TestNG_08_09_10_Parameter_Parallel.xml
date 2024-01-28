@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite" parallel="tests" thread-count="3">
+    <!--thread-count default = 5-->
+    <!--parallel="methods": use @Before/AfterMethod instead of @Before/AfterClass-->
+    <!--should not run parallel on 1 PC-->
+
+    <!--<parameter name="environment" value="dev"/>-->
+    <!--<parameter name="environment" value="test"/>-->
+    <!--<parameter name="environment" value="staging"/>-->
+    <parameter name="environment" value="live/production"/>
+    <!--<parameter name="environment" value="sandbox"/>-->
+
+    <test verbose="2" preserve-order="true" name="Run on Firefox">
+        <parameter name="browser" value="firefox"/>
+        <parameter name="version" value="111"/>
+        <classes>
+            <class name="webdriver_Topic_17_TestNG.TestNG_08_09_10_Parameter_Parallel"/>
+        </classes>
+    </test>
+
+    <test verbose="2" preserve-order="true" name="Run on Chrome">
+        <parameter name="browser" value="chrome"/>
+        <parameter name="version" value="222"/>
+        <classes>
+            <class name="webdriver_Topic_17_TestNG.TestNG_08_09_10_Parameter_Parallel"/>
+        </classes>
+    </test>
+
+    <test verbose="2" preserve-order="true" name="Run on Edge">
+        <parameter name="browser" value="edge"/>
+        <parameter name="version" value="333"/>
+        <classes>
+            <class name="webdriver_Topic_17_TestNG.TestNG_08_09_10_Parameter_Parallel"/>
+        </classes>
+    </test>
+
+</suite>
