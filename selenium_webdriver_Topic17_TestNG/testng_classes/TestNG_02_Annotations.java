@@ -1,4 +1,4 @@
-package webdriver_Topic_17_TestNG;
+package testng_classes;
 
 import org.testng.annotations.*;
 

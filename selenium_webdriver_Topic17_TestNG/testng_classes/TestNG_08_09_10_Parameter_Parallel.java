@@ -1,4 +1,4 @@
-package webdriver_Topic_17_TestNG;
+package testng_classes;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +13,7 @@ import java.time.Duration;
 public class TestNG_08_09_10_Parameter_Parallel {
     WebDriver driver;
 
-    public void getBrowserDriver(String browserName) {
+    private void getBrowserDriver(String browserName) {
         switch (browserName) {
             case "firefox" -> driver = new FirefoxDriver();
             case "chrome" -> driver = new ChromeDriver();
@@ -22,7 +22,7 @@ public class TestNG_08_09_10_Parameter_Parallel {
         }
     }
 
-    public String getEnvironmentUrl(String environmentName) {
+    private String getEnvironmentUrl(String environmentName) {
         String urlValue;
         switch (environmentName) {
             case "dev" -> urlValue = "http://dev.techpanda.org";
