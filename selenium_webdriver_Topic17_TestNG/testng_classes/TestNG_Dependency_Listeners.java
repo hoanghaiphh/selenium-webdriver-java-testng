@@ -3,9 +3,10 @@ package testng_classes;
 import graphql.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-// @Listeners (listeners.ExtentReport.class)
+// @Listeners(testng_classes.ExtentReport.class)
 public class TestNG_Dependency_Listeners {
     // CRUD: Create - Read - Update - Delete --> Dependencies Test
 
