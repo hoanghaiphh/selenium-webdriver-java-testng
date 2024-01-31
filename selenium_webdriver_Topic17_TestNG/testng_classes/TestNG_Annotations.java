@@ -2,7 +2,7 @@ package testng_classes;
 
 import org.testng.annotations.*;
 
-public class TestNG_02_Annotations {
+public class TestNG_Annotations {
 
     @BeforeClass
     public void beforeClass() {

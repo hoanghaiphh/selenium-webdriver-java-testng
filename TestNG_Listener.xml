@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Listener" verbose="1">
+
+    <listeners>
+        <listener class-name="listeners.ExtentReport"/>
+    </listeners>
+
+    <test name="Run on Firefox">
+        <classes>
+            <class name="testng_classes.TestNG_Annotations"/>
+            <class name="testng_classes.TestNG_Dependency_Listeners"/>
+        </classes>
+    </test>
+
+</suite>

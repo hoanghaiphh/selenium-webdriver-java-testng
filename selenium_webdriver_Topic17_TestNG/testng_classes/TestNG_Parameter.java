@@ -10,7 +10,7 @@ import org.testng.annotations.*;
 
 import java.time.Duration;
 
-public class TestNG_08_09_10_Parameter_Parallel {
+public class TestNG_Parameter {
     WebDriver driver;
 
     private void getBrowserDriver(String browserName) {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Preserve Order" verbose="1">
+
+    <test name="Run on Firefox" preserve-order="false">
+        <!--preserve-order="true": run in order of below classes
+        preserve-order="false": run in order of package-->
+        <classes>
+            <class name="testng_classes.TestNG_Invocation_DataProvider"/>
+            <class name="testng_classes.TestNG_Annotations"/>
+        </classes>
+    </test>
+
+    <test name="Run on Firefox" preserve-order="false">
+        <packages>
+            <package name="webdriver"/>
+        </packages>
+    </test>
+
+</suite>

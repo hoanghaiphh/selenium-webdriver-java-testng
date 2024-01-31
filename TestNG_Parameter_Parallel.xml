@@ -15,7 +15,7 @@
         <parameter name="browser" value="firefox"/>
         <parameter name="version" value="111"/>
         <classes>
-            <class name="testng_classes.TestNG_08_09_10_Parameter_Parallel"/>
+            <class name="testng_classes.TestNG_Parameter"/>
         </classes>
     </test>
 
@@ -23,7 +23,7 @@
         <parameter name="browser" value="chrome"/>
         <parameter name="version" value="222"/>
         <classes>
-            <class name="testng_classes.TestNG_08_09_10_Parameter_Parallel"/>
+            <class name="testng_classes.TestNG_Parameter"/>
         </classes>
     </test>
 
@@ -31,7 +31,7 @@
         <parameter name="browser" value="edge"/>
         <parameter name="version" value="333"/>
         <classes>
-            <class name="testng_classes.TestNG_08_09_10_Parameter_Parallel"/>
+            <class name="testng_classes.TestNG_Parameter"/>
         </classes>
     </test>
 
